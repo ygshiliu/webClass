@@ -1,0 +1,152 @@
+
+一个设计优良的网页是由结构、表现、行为三部分组成,且三者分离
+结构：html
+表现：css
+行为：js
+
+1.Html
+    [1]简介
+        HTML是HyperText Markup Language的缩写，意为超文本标记语言，是一种用来编写网页的语言。
+        HTML本身语法非常简单，主要是通过各种标签来定义出一个网页的基本结构
+        HTML语法本身要求并不严格，即使网页写的非常不标准浏览器也能正确的解析。
+        
+    [2]基本结构
+        <!Doctype html>  
+        <html>
+            <!-- 不在正文中显示的内容推荐写在head中 -->
+            <head><meta charset="utf-8"><title>title</title></head>
+            <!--在正文中显示的内容写在body中 -->
+            <body></body>
+        </html>
+        
+    [3]语法
+        1、标签可以嵌套但是不能交叉嵌套
+        2、双标签需要正确结束
+        3、html不区分大小写，建议小写
+        4、属性必须有值，值需要使用 ""或''引起来
+        5、浏览器不解析换行和空格    
+        
+    [4]常用标签
+        ①标题
+            h1-h6  主要提供给搜索引擎使用
+        ②段落
+           p 块级元素，独占一行且上下有空白行
+        ③换行
+            <br> 单标签
+        ④无序列表
+            <ul>
+				<li></li>
+				<li></li>
+			</ul>
+        ⑤图片
+            <img src=""  alt=""/>
+			src :指向图片路径
+			alt：在图片不能正确显示时的提示信息
+			
+			相对路径：当前文档所在的文件目录  
+			绝对路径：从盘符开始的路径，如 c:/
+			
+        ⑥超链接   
+            <a href=""/> 从当前页面跳转到目标页面
+			href用来指明请求的路径 
+			
+			
+    [5]表格 可以格式化对齐显示数据
+        <table border="1" align="left/center/right" cellpacing="0" cellpadding="10">
+            <tr>
+                <td>aa</td>
+                <td>bb</td>
+                <td>cc</td>
+            </tr>
+            
+            <tr>
+                <td>aa1</td>
+                <td>bb2</td>
+                <td>cc3</td>
+            </tr>
+        </table>
+		
+		table用来定义一个表格区域
+		tr用来定义一行
+		td用来定义一个单元格
+		th用来定义表头，自带加粗效果
+        
+            
+    [6]表单  为了收集用户数据
+        用户名:<input type="text"  name="username1"/><br/>
+        <form action=".html" method="post">
+            用户名:<input type="text"  name="username"/><br/>
+            密码:<input type="password"  name="password"/><br/>
+            照片:<input type="file"  name="photo"/><br/>
+            性别:男<input type="radio"  name="gender" value="nan"/>女<input type="radio"  name="gender" value="nv"/><br/>
+            爱好: 男<input type="checkbox"  name="hobby" value="nan"/>女<input type="checkbox"  name="hobby" value="nv"/><br/>
+            下拉选框
+                <select name="sel">
+                    <option value="1">1</option>
+                    <option>2</option>
+                    <option>3</option>
+                </select>
+            <input type="submit" value="注册"/> <input type="reset" value="重置"/>
+        </form>
+		
+		form:用来定义一个表单区域，有两个重要的属性action与method
+		action用来指向表单信息要指向的服务器地址，也就是路径
+		method有两个值get和post.默认是get.
+		input来定义表单项，其中type="text|password|file|radio|checkbox" ,分别是文本框|密码框|文件框|单选按钮|多选按钮
+		注：
+			表单项中必须指明name属性
+			单选按钮与多选按钮使用name属性进行分组，同时必须指定value属性值
+			
+		
+
+    [7]DIV和SPAN
+        div:  块级元素，主要用来做页面布局
+        span：内联元素，只占自身大小，用来选择内容
+
+    [8]实体标签   ：html中保留的特殊字符
+        空格： &nbsp;            
+        小于号： &lt;
+        大于号： &gt;
+		
+		
+2.CSS
+    [1]简介
+        CSS是Cascading Style Sheets的缩写，层叠样式表的意思主要用来设置网页中元素的样式。
+        CSS语法也十分简单，主要分为两部分：
+            ①选择器： 选中需要设置样式的标签
+            ②声明：  具体的样式   {样式名: 样式值;}
+        CSS语法虽然简单，但是要想真正的掌握CSS还是要花费一定时间的，尤其是布局和各种样式的实现。
+        作为我们后台工程师来说不需要很深的CSS功底，只需要了解基本语法即可。
+    [2]基本语法
+        ①编写位置
+            1) 页面内部
+                1.1 标签内部  
+					-- 通过标签style属性指定
+                1.2 head内部的style标签中书写css样式
+                    -- 通过style标签中指定，要选择器和声明配合使用
+					
+            2) 页面外部     使用最多
+                2.1 创建一个css样式文件[文件内部编写css样式]
+                2.2 在需要使用css样式的文件中通过link标签引入样式文件
+                    <link  rel=""  type=""  href="css文件的路径"   ></link>
+            
+        ②选择器
+            1) 基本选择器
+                      元素选择器
+					  ID选择器
+					  类选择器
+					  
+
+            2) 常用样式
+					border : 宽度  线形类型  颜色
+					text-align: center | left | right
+					font-size: 大小
+                    
+    [3]颜色
+        > 在CSS中我们使用RGB值来表示颜色。
+        > RGB值可以写成一个三组两位十六进制数字，这个数字要求以#号开头
+        > #红色绿色蓝色
+        > 000000 - ffffff
+            黑色：#000000
+            白色：#ffffff
+            红色：#ff0000

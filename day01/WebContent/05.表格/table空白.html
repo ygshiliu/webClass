@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>table_blank</title>
+</head>
+<body>
+	
+	<!-- 
+		table标签来定义一个表格
+		tr标签来定义一行
+		td标签来定义一个单元格
+		th标签定义有自身样式，定义标题
+		
+		向下合并单元格使用rowspan
+		横向合并单元格使用colspan
+		
+		
+	 -->
+   <h1 style="text-align:center">学生成绩表</h1> 
+   	<table align="center" border="1px solid red" style="text-align:center;" width="50%"  cellpadding="5" cellspacing="0">
+   		<tr>
+	   		<th>序号</th>
+	   		<th>组</th>
+	   		<th>姓名</th>
+	   		<th>成绩</th>
+   		</tr>
+   		<tr>
+	   		<td>1</td>
+	   		<td rowspan="2">1</td>
+	   		<td>张三</td>
+	   		<td>90</td>
+   		</tr>
+   		<tr>
+	   		<td>2</td>
+	   		<td>王五</td>
+	   		<td>88</td>
+   		</tr>
+   		<tr>
+	   		<td>3</td>
+	   		<td rowspan="2">2</td>
+	   		<td>李四</td>
+	   		<td>95</td>
+   		</tr>
+   		<tr>
+	   		<td>4</td>
+	   		<td>赵八</td>
+	   		<td>97</td>
+   		</tr>
+   		<tr>
+	   		<td colspan="3">平均成绩</td>
+	   		<td>92</td>
+   		</tr>
+   	</table>
+</body>
+</html>

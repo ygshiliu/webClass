@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>form空白</title>
+</head>
+<body>
+		<!-- 
+		form 标签来创建一个表单域
+		action属性用来指定表单中的信息提交的目标位置
+		method:指明表单的提交方式 ，有get和post两种。默认为get
+		
+		所有的表单项必须定义在form标签体中
+		 -->
+		 
+		 <form action="success.html" method="get">
+		 	<!-- 
+		 		使用input来定义一个表单项
+		 		type:指定这个表单项类型。"text"表示这是一个文本框
+		 		name:用来指定这个表单项的名字
+		 		value:用来指定表单项的值
+		 		最终name与value会组成一个键值对提交到目标位置，多个键值之间使用&符连接
+		 	 -->
+		 	姓名:<input type="text" name="username" /><br>
+		 	<!-- 密码 -->
+		 	密码:<input type="password" name="password"><br>
+		 	<!-- 单选按钮 -->
+		 	<!-- 注：必须指定name与value的属性值 ，且单选按钮是以name属性值进行分组的。
+		 	值一样默认为一组，有排他性;值不一样默认为不同组，没有排他性 -->
+		 	性别 ：<input type="radio" name="gender" value="male"> 男
+		 		 <input type="radio" name="gender" value="female">  女
+		 	<!-- 多选框  -->
+		 	<!-- 使用name属性值进行分组 -->
+		 	<br>爱好 ：<input type="checkbox" name="hobby" value="旅游">旅游
+		 	<input type="checkbox" name="hobby" value="读书">读书
+		 	<input type="checkbox" name="hobby" value="看电影">看电影
+		 	<input type="checkbox" name="hobby" value="打游戏">打游戏
+		 	<!-- 下拉列表框 -->
+		 	<!-- 
+		 		使用select和option组合标签，name属性定义在select开始标签处，value属性定义在option
+		 	 -->
+		 	<br>喜欢的明星：
+		 	<select name="star" multiple size="2">
+		 		<option value="佟刚">刘德华</option>
+		 		<option value="妞妞">妞妞</option>
+		 		<option value="宁姐">宁姐</option>
+		 		<option value="宋红康">宋红康</option>
+		 	</select>
+		 	
+		 	
+		 	<!-- 提交按钮 -->
+		 	<br><input type="submit" value="注册">
+		 </form>
+</body>
+</html>

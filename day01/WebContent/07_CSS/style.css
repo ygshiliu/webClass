@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+	/* 标签选择器：使用标签名 */
+	p{
+		border:1px solid green;
+		font-size:50px;
+	}
+	
+	/* 类选择器 ：以点开头，后跟class属性名*/
+	.a{
+		font-size:40px;
+	}
+	
+	/* ID选择器：以#开头，后跟id属性值 */
+	#b{
+		color:blue;
+		font-size:50px;
+	}

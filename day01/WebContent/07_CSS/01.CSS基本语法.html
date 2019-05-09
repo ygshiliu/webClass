@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CSS基本语法</title>
+<!-- 第2种方式：在style标签中指定，style写在head标签里面 -->
+<!-- 仅针对当前页面起作用，不能复用 -->
+<style type="text/css">
+	/* 需要选择器与样式声明配合使用  ,在style标签中定义的样式会对当前页面中所有相匹配的元素启作用*/
+	/* 标签选择器：使用标签名 */
+	p{
+		border:1px solid green;
+	}
+	
+	/* 类选择器 ：以点开头，后跟class属性名*/
+	.a{
+		font-size:40px;
+	}
+	
+	/* ID选择器：以#开头，后跟id属性值 */
+	#b{
+		color:blue;
+		font-size:50px;
+	}
+	
+	#c{
+		color:#f0f;
+		font-size:50px;
+	}
+	
+	/* css样式中提供了RGB方式来设置颜色
+	   RGB是red green blue单词首字母的缩写，是以#开头后跟6位十六进制数(0-f)，#000000-#ffffff
+	   RGB由三组两位十六进制数组成。
+	       每两位代表一种颜色，像这种两两相同的值，我们也可以缩写为#000 -- #fff
+	 */
+	
+</style>
+<!-- 第3种方式 ：使用link标签引入一个外部css样式文件 -->
+<!-- 推荐使用此方式，可以统一样式  -->
+<!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+
+</head>
+<body>
+	<!-- 第1种方式：通过html标签的style属性设置,在这里只使用样式声明 -->
+	<!-- 样式与html耦合，不推荐使用 -->
+	<p style="color:red;text-shadow:0 0 3px #FF0000;">师傅领进门，修行靠个人</p>
+	<p class="a">师傅领进门，修行靠个人</p>
+	<p id="b">师傅领进门，修行靠个人</p>
+	<p id="c">师傅领进门，修行靠个人</p>
+	
+</body>
+</html>
