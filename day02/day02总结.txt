@@ -1,0 +1,128 @@
+
+JavaScript
+    [1]简介
+        JavaScript简称JS是运行在浏览器端的一门脚本语言，一开始主要用来做浏览器端验证，但现在功能已经不止于此。
+                    所谓脚本语言就是指，代码不需要编译，直接运行，并且读入一行运行一行。
+        JavaScript目前应用非常广泛，例如：浏览器端的验证，Ajax，富客户端等，甚至也有服务器端的JavaScript —— node.js
+            
+    [2]基本语法  和java类似
+        ①注释  
+            > 单行注释： //
+            > 多行注释:  /**/
+            
+        ②变量   
+            > 声明：js是弱类型的语言，所有的变量都是通过var关键字声明
+       var a ; //变量声明时没有数据类型
+            > 赋值：具体的值有数据类型，变量会根据值的类型改变而改变
+	   a = 1
+	   a = 'a'
+	   a = true
+	   
+                
+        ③函数方法
+            > 在JS中函数也是一个对象，也可以将一个函数的引用赋值给一个变量。
+                
+            > 函数的声明和调用    
+                - 声明匿名函数
+             var fun = function(a,b){ return 1;}
+                                 参数不用指定类型 ，同时浏览器引擎在调用 函数时不会检查参数的个数及类型 
+                                 在js中，是通过函数名来区分函数的(函数名相同会被覆盖）                  
+                                返回数据使用return关键字   
+                                
+                - 声明命名函数
+					 function 函数名（参数列表）{
+						js代码;
+						return;
+					 }
+                - 调用函数：
+                	函数名+（）
+     ④对象
+	 
+			有两种方式 ：
+			var obj  =  new Object();
+			这种方式不能在创建对象的同时设置属性
+			
+			可以动态的添加属性：对象.属性=值
+			obj.name="haha"
+			
+			获取属性值：对象.属性名
+			obj.name
+			
+			var obj ={name:'xixi',age:19}
+			可以在创建对象 的同时设置属性
+			
+			注： this 代表函数所属对象
+            
+    [3]编写位置
+        ①标签内部     
+            <button onclick="alert('hehe')">按钮</button>
+			
+        ②网页内部    浏览器解析html页面的加载顺序由上到下
+            > 在标签加载后
+                <button id="btn">按钮</button>
+                <script>
+                    //在标签加载完成后，使用js代码操作页面中的标签
+                    var btn = document.getElementById("btn");
+                    btn.onclick = functon(){
+                        alert("heihei");
+                    };
+                </script>
+            > 在head标签中 ：  
+                <head>
+                    <script>
+                        //等文档加载结束 查找页面中的元素
+                        window.onload = function(){
+                        
+                            var btn = document.getElementById("btn");
+                            btn.onclick = functon(){
+                                alert("heihei");
+                            };
+                        };
+                    </script>
+                </head>
+                <button id="btn">按钮</button>
+        ③外部.js文件  
+            >在要使用js代码的页面中引入js文件
+                <script src="js文件的路径"></script>
+            
+
+                
+    [4]事件
+        ①用户操作网页或者浏览器所发生的交互行为称为事件。比如：点击按钮，最小化窗口，修改文本框内容等。
+        ②JS为我们定义许多浏览器中的事件。比如：单击、双击、移动 等。
+        ③我们可以通过为事件设置一个响应函数来对事件进行响应。可以通过两种方式为元素绑定响应函数：
+            标签内：onXXX
+            标签外：通过js代码 使用dom标准的方法给标签绑定事件
+                
+        
+        
+    [5]DOM： document object  model
+
+        万事万物皆节点:Node
+        节点类型：文档的所有内容都是节点对象
+            文档节点: document
+            注释节点:  
+            元素节点：element：  dom标准页面的最小结构
+            文本节点：
+            属性节点：
+        
+        ①DOM查询  
+            1) 通过document对象查询，在整个文档范围内查找
+                document.getElementById();
+				document.getElementsByTagName()
+				document.getElementsByName()
+                
+            2) 通过具体的元素对象查询 （了解）
+                
+                element.getElementsByTagName(标签名)                    
+                element.childNodes                     
+                element.firstChild
+                element.lastChild                
+                element.parentNode                
+                element.previousSibling                    
+                element.nextSibling
+                    
+            3) 获取和设置元素的属性
+                   获取：对象.属性名
+				   设置：对象.属性名=属性值
+            

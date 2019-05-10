@@ -4,7 +4,32 @@
 <meta charset="UTF-8">
 <title>对象</title>
 <script type="text/javascript">
-
+	
+	//第1种：直接new Object()
+	var obj = new Object();
+	//在js中可以动态添加属性: 对象.属性=值
+	obj.name = "xixi"
+	obj.age = 13;
+	obj.info = function(){
+		alert(this.name+"--"+this.age)
+	}
+	
+	//调用函数
+	//obj.info()
+	
+	//获取对象属性：对象.属性
+	console.log(obj.name)
+	console.log(obj)
+	
+	
+	//2简洁方式 
+	var newobj = {};
+	console.log(newobj)
+	//创建对象的同时设置属性
+	var obj2 = {name:"haha",age:19,heigh:165}
+	console.log(obj2)
+	console.log(obj2.name)
+	
 </script>
 </head>
 <body>

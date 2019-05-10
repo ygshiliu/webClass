@@ -4,10 +4,41 @@
 <meta charset="UTF-8">
 <title>function</title>
 <script type="text/javascript">
-
+	
+	//js中一切皆对象，函数也是对象，也可以看成是一种类型
+	//声明函数我们使用关键字function
+	
 	//1.函数声明
+	//参数不需要定义变量var 
+	//命名函数
+	function sum(a,b){
+		console.log("111111")
+		console.log(a+b)
+	}
+	
+	function sum(c){
+		console.log("222222")
+		console.log(c*d)
+	}
+	
+	alert(sum(1,2))
+	
+	//匿名函数
+	var mul = function(a,b){
+		console.log(a*b);
+		return a*b;
+	}
 	
 	//2.函数调用
+	//函数的调用就是函数名+（）
+	
+	sum() //NaN  代表不是一个数值  not a number
+	sum(1,2)
+	
+	mul()
+	mul(1,2)
+	mul(1,2,3) //js在调用函数时不会检查参数的个数及类型
+	mul(true)
 	
 </script>
 </head>

@@ -6,11 +6,26 @@
 <script type="text/javascript">
 	//借助window.onload事件,在这个页面加载完成后执行程序代码
 	window.onload = function(){
+		 // 事件就是一种行为，在html中定义了很多事件属性，如onclick ondblclick
+		 //我们要处理的是使用js对事件被触发之后的响应，即给html事件属性赋一个函数
+		 
+		 //获取对象 
+		 var btn = document.getElementById("btnId");
+		 //给对象事件赋值
+		 //此函数是由浏览器引擎调用的，同时它会创建一个事件对象传递给函数,我们只需要定义一个参数变量来接收一下就可以了	 
+		 btn.onclick = function(event){
+			 console.log(event);
+			 alert("你好！！")
+		 }
+		 
+		//正常情况下，函数的调用 如 btn.onclick()
 		
-	};
-</script>
+	}
+ </script>
 </head>
 <body>
-	<button id="btnId">SayHello</button>
+
+	
+	<button id="btnId" >SayHello</button>
 </body>
 </html>

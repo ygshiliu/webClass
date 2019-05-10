@@ -3,9 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <title>load01</title>
+	<!-- 
+		第2种 ：可以写在script标签中
+		浏览器在解析html标签时是从上到下，一行一行解析
+		注：当script标签在head标签里时，一定要在页面加载完成之后触发其中的代码 
+	 -->
+	<script type="text/javascript">
+	/* 	window.onload = function(){
+			var btn = document.getElementById("btnId");
+			btn.onclick = function(){
+				alert("haha")
+			}
+		} */
+	
+	</script>
+	<!-- 第3种：可以引入一个外部的js文件 -->
+	<script type="text/javascript" src="script.js"></script>
 </head>
 <body>
+	<!-- 
+		第1种：可以直接写在html的事件属性中
+		此方式 结构与行为耦合，不推荐使用
+	 -->
+	<button id="btnId" onclick="alert('xixi')" >SayHello</button>
 	
-	<button id="btnId">SayHello</button>
+
 </body>
 </html>

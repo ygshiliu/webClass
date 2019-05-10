@@ -6,57 +6,95 @@
 <link rel="stylesheet" type="text/css" href="style/css.css" />
 <script type="text/javascript">
 	window.onload = function(){
+		
+		var str = "xixi"
+		console.log(str.length)
+		
 		//1.查找#bj节点
+		var btn01 = document.getElementById("btn01");
+		btn01.onclick = function(){
+			var bj = document.getElementById("bj");
+			//innerHTML只有元素节点对象才可以使用，获取标签的标签体部分内容
+			console.log(bj.innerHTML)
+			console.log(bj.id)
+		}
 		
 		//2.查找所有li节点
 		var btn02Ele = document.getElementById("btn02");
 		btn02Ele.onclick = function(){
-			
-		};
+			//返回一个数组
+			var lis = document.getElementsByTagName("li");
+			console.log(lis.length)
+		}; 
 		//3.查找name=gender的所有节点
 		var btn03Ele = document.getElementById("btn03");
 		btn03Ele.onclick = function(){
-			
+			//返回数组
+			var gender = document.getElementsByName("gender");
+			console.log(gender.length)
 		};
 		//4.查找#city下所有li节点
 		var btn04Ele = document.getElementById("btn04");
 		btn04Ele.onclick = function(){
+			//查找到#city
+			var city = document.getElementById("city");
+			//使用element.getElementsByTagName()可以获取当前元素下的所有指定标签的子节点
+			var lis = city.getElementsByTagName("li");
+			console.log(lis.length)
 			
 		};
 		//5.返回#city的所有子节点
 		var btn05Ele = document.getElementById("btn05");
 		btn05Ele.onclick = function(){
-			
+			//element.childNodes:获取元素下的所有子节点
+			var city = document.getElementById("city")
+			var child = city.childNodes;
+			console.log(child.length)
 		};
 		//6.返回#phone的第一个子节点
 		var btn06Ele = document.getElementById("btn06");
 		btn06Ele.onclick = function(){
-			
+			var phone = document.getElementById("phone")
+			var frist = phone.firstChild;
+			console.log(frist)
 		};
 		//7.返回#bj的父节点
 		var btn07Ele = document.getElementById("btn07");
 		btn07Ele.onclick = function(){
-			
+			var bj= document.getElementById("bj")
+			var parent = bj.parentNode;
+			console.log(parent.id)
 		};
 		//8.返回#android的前一个兄弟节点
 		var btn08Ele = document.getElementById("btn08");
 		btn08Ele.onclick = function(){
-			
+			var android= document.getElementById("android")
+			var previous =android.previousSibling;
+			console.log(previous.innerHTML)
 		};
 		//9.读取#username的value属性值
 		var btn09Ele = document.getElementById("btn09");
 		btn09Ele.onclick = function(){
+			var username = document.getElementById("username")
+			//获取属性：对象.属性
+			console.log(username.value)
 			
 		};
 		//10.设置#username的value属性值
 		var btn10Ele = document.getElementById("btn10");
 		btn10Ele.onclick = function(){
-			
+			var username = document.getElementById("username")
+			//设置属性值 ：对象.属性 = 属性值
+			username.value = "xixi"
 		};
 		//11.返回#bj的文本值
 		var btn11Ele = document.getElementById("btn11");
 		btn11Ele.onclick = function(){
-			
+			var bj = document.getElementById("bj")
+			//使用innerHTML
+			console.log(bj.innerHTML)
+			//更改文本值 
+			bj.innerHTML="昌平"
 		};
 	};
 </script>
@@ -69,7 +107,7 @@
 		</p>
 
 		<ul id="city">
-			<li id="bj">北京</li>
+			<li id="bj" class="xi">北京</li>
 			<li>上海</li>
 			<li>东京</li>
 			<li>首尔</li>

@@ -5,11 +5,46 @@
 <title>variable</title>
 <script type="text/javascript">
 	
+	//js是一门弱类型的语言
+	//声明变量使用var关键字
+	//命名规则同java
+	
+	/* int i = 1;
+	boolean f=true;
+	String s="abc"; */
+	
+	//console.log()可以向控制台输出信息
+	//typeof关键字 ，可以查看数值类型
+	//变量名没有类型，而数值有类型 number boolean string等
+	//语句可以使用分号结尾，也可以不使用;但如果遇到( [ { 时必须前面加;号
+	
+	
 	//1.变量声明
+	var a;
 	
 	//2.变量赋值
-	
+	var i=1; //number
+	i=true
+	i="abc" //在js中不区分单引号和双引号
+	i='cc'
+	i= 1.2  //number
+	i= new Date();
+	console.log(i)
+	console.log(typeof i);
+
 	//3.变量严格区分大写小写
+	var b = 2;
+	var B = true;
+	console.log(b)
+	console.log(B)
+	
+	//除了使用var关键字外，const声明一个常量，let声明一个块级变量
+	const c = "11111";
+	//c="2222"
+	
+	let d=false;
+	d=true
+	console.log(d)
 	
 </script>
 </head>
