@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>全选全不选1(空白)</title>
+	<script type="text/javascript" src="../../script/jquery-1.7.2.js"></script>
+	<script type="text/javascript">
+		/* 
+		功能需求：
+			①全选按钮：点击后所有爱好都选中
+			②全不选按钮：点击后所有爱好都不选中
+			③反选按钮：点击后所有爱好选中状态反转
+			④提交按钮：点击后依次弹出选中内容
+		*/
+		$(function(){
+			//分别获取按钮，分别绑定单击事件
+			$("#btn01").click(function(){
+				//①全选按钮：点击后所有爱好都选中
+				//获取所有复选框
+				//将其设置为选中状态 ，需要更改checked属性的值
+				//attr()用来设置或获取属性值
+				//设置时，需要传入属性名和属性值
+				//获取时，只需要传入属性名
+				$("[name='items']").attr("checked",true);
+			})
+			
+			$("#btn02").click(function(){
+				//②全不选按钮：点击后所有爱好都不选中
+				$("[name='items']").attr("checked",false);
+			})
+			
+			$("#btn03").click(function(){
+				//③反选按钮：点击后所有爱好选中状态反转
+				$("[name='items']").each(function(){
+					$(this).attr("checked",!this.checked);
+				})
+			})
+			
+			$("#btn04").click(function(){
+				//④提交按钮：点击后依次弹出选中内容
+				//val()用来设置和获取value属性值，无参为获取，有参数为设置
+				$("[name='items']").each(function(){
+					console.log($(this).val())
+				})
+			})
+		});
+		
+	</script>
+	</head>
+	<body>
+	
+		<form method="post" action="">
+		
+			你爱好的运动是：
+			<br />
+			<input type="checkbox" name="items" value="足球" />足球
+			<input type="checkbox" name="items" value="篮球" />篮球
+			<input type="checkbox" name="items" value="羽毛球" />羽毛球
+			<input type="checkbox" name="items" value="乒乓球" />乒乓球
+			<br />
+			<input id="btn01" type="button" id="checkedAllBtn" value="全　选" />
+			<input id="btn02" type="button" id="checkedNoBtn" value="全不选" />
+			<input id="btn03" type="button" id="checkedRevBtn" value="反　选" />
+			<input id="btn04" type="button" id="sendBtn" value="提　交" />
+		</form>
+		
+	</body>
+</html>

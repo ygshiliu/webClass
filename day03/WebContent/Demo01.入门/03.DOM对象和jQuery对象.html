@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DOM对象和jQuery对象</title>
+<script type="text/javascript" src="../script/jquery-1.7.2.js"></script>
+<script type="text/javascript">
+	$(function(){
+		//DOM对象 与jQuery对象的区别
+		/* 
+		1.DOM对象就是使用原生js获取的对象 ，如document的3个方法
+			jQuery对象就是使用jquery核心函数获取的对象 
+		2.命名规则上，jquery对象与DOM对象是一样的，但是jQuery对象通常使用$开头，与DOM对象加以区分
+		3.DOM对象不能使用jQuery对象的方法，jQuery对象不能调用DOM对象的方法 ,但它们之间是可以互转的
+		*/
+		
+		
+		//分别使用DOM对象和jQuery对象获取div中的文本
+		
+		//原生DOM获取对象 
+		var div = document.getElementById("testDiv");
+		console.log(div.innerHTML)
+		
+		//DOM---jQuery
+		console.log("jquery:"+$(div))
+		
+		//jQuery对象
+		var $div = $("#testDiv");
+		console.log($div.innerHTML) //undefined
+		console.log($div.text())
+		
+		//jQuery -- DOM, 对象[index]
+		//jQuery实质是DOM对象数组，我们直接取对应位置的元素就可以了
+		console.log("DOM:"+$div[0])
+		console.log("DOM:"+$div[0].innerHTML)
+	});
+</script>
+</head>
+<body>
+	<div id="testDiv">挤进尚硅谷，注定你优秀！</div>
+	<br/>
+	<button id="dom2dom">使用DOM对象调用DOM方法</button>
+	<button id="dom2jQuery">使用DOM对象调用jQuery方法</button>
+	<button id="jQuery2jQuery">使用jQuery对象调用jQuery方法</button>
+	<button id="jQuery2dom">使用jQuery对象调用DOM方法</button>
+</body>
+</html>

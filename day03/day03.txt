@@ -1,0 +1,149 @@
+
+JQuery
+
+	[1] jquery简介
+		> 介绍：就是一个js文件，封装了工具方法，解决了大部分浏览器的兼容问题，提高开发效率
+			-- 通过script标签来导入
+		
+	[2] jquery核心函数
+		> $本质就是一个函数，代表核心函数的引用，学习jquery就是学习核心函数的使用
+				$() ==	jQuery()
+		> 作用：可以通过给核心函数传入不同参数实现不同的功能
+		
+			-- $(function(){})  相当于window.onload()在文档加载完成之后触发
+			-- $("html标签“) 用来创建一个对象，如 $("<li>昌平</li>")
+			-- $("选择器")  用来获取jquery对象
+			-- $(DOM对象） 用来将DOM对象转成jQuery对象，目的是调用jQuery对象的方法	
+
+				jQuery对象本质上是DOM对象数组，所以将jQuery对象转DOM对象的过程，就是通过下标来获取，如 $div[0]
+		
+	[3] Dom对象和jquery对象
+			DOM对象：用原生js获取的对象，如document.getElementById()等
+			jQuery对象：用jQuery核心函数获取的对象
+			
+			区别：
+					1是完全不同的两种对象，彼此之间不能互相调用彼此的方法
+					2是在命名上有所区别，jQuery对象与DOM对象命名规则上与java是一致的，但jQuery对象通常以$符开头来命名
+					
+
+	[4] jQuery的选择器
+			> jQuery的最厉害的地方就是它拥有众多的选择器。
+			> jQuery的选择器主要是集合CSS和xPath部分语法。
+			> 选择器可以很方便的获取到页面中元素。
+			
+			①基本选择器
+						#id 
+						element 
+						.class 
+						* 
+						selector1,selector2,selectorN 
+			②层次选择器  
+				ancestor descendant 
+				parent > child 
+				prev + next 
+				prev ~ siblings 
+
+			③过滤选择器 
+				参考API
+				基本
+				:first 
+				:last 
+				:not(selector) 
+				:even 
+				:odd 
+				:eq(index) 
+				:gt(index) 
+				:lt(index) 
+				:header 
+				:animated 
+				:focus1.6+ 
+				内容
+				:contains(text) 
+				:empty 
+				:has(selector) 
+				:parent 
+				可见性
+				:hidden 
+				:visible 
+				属性
+				[attribute] 
+				[attribute=value] 
+				[attribute!=value] 
+				[attribute^=value] 
+				[attribute$=value] 
+				[attribute*=value] 
+				[attrSel1][attrSel2][attrSelN] 
+				子元素
+				:nth-child 
+				:first-child 
+				:last-child 
+				:only-child 
+				
+	[5] DOM查询   
+		> 这里DOM查询指的是在已经获得jQeury对象的基础上通过jQeury对象调用方法来查询元素
+		> 常用方法：
+			filter(选择器) --> 获取符合选择器字符串的元素
+			not(选择器) --> 删除符合选择器字符串的元素
+			children(选择器) --> 获取当前对象的子元素
+			find(选择器) --> 查找当前对象指定后代元素
+			parent() --> 获取当前元素的父节点
+			parents(选择器) --> 获取当前节点的指定祖先节点
+			add(选择器|对象) --> 向当前对象中添加其他对象
+	[6] DOM增删改
+		> 向父元素中添加子元素
+			- 父元素.append(子元素)  
+			- 父元素.prepend(子元素) 
+		> 将子元素插入进父元素
+			-  子元素.appendTo(父元素)
+			-  子元素.prependTo(父元素)
+		
+		> 向某节点的前边插入一个兄弟元素
+			- 后边的对象.before()
+			- 前边的对象.insertBefore()
+		
+		> 向某节点的后边插入一个兄弟元素
+			- 前边的对象.after()
+			- 后边的对象.insertAfter()
+		
+		> 替换节点
+			- 旧节点.replaceWith(新节点)
+			- 新节点.replaceAll(旧节点)
+				
+		
+		> 掏空节点
+			- 对象.empty()
+			-标签内的内容删除
+
+		> 删除当前节点
+			- 对象.remove()
+			- 删除标签内的内容+事件
+		
+		> 获取元素内部的html代码: 
+			--html() 用来获取标签内的html代码（包括标签和文本）
+			
+		> 获取元素内部的文本值: 
+			-- text() 获取标签中的文本内容
+			
+			
+		> 获取表单项的value属性值
+			-val() 用来获取和设置表单项的value属性值
+					 同时还可以用来指定下拉列表、复选框、单选框的选中状态，指定一个数组
+			 
+   [7] 文档加载
+	
+			
+	[8] 事件
+		- jquery绑定事件：
+			1、 通过事件类型直接绑定事件
+				click、dblclick、mouseenter、mouseleave、mousemove、change[当表单项的value属性值改变并且失去了焦点 会被触发]
+			2、通过bind("type1 type2...." , function(){})方法一次绑定多个事件[一般用来绑定两个相反的事件  鼠标移入鼠标移出]
+			3、通过 祖先元素.delegate("后代元素选择器" , "type1 type2..." , function(){} )动态绑定事件[无论是页面中现有的标签还是后加入的都会绑定上事件]
+			4、通过unbind("type1 type2...") 解绑事件
+			
+	[9] 冒泡
+		> 事件的冒泡指，当一个元素上绑定的事件被触发，这时它祖先元素上的同类事件也会被触发。
+		> 冒泡就是事件的向上传导。
+		> js中处理冒泡问题，直接在响应函数中 return false;
+			- 阻止事件的向上传递
+			- 取消标签的默认行为
+	

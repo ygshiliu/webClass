@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>核心函数的作用</title>
+<script type="text/javascript" src="../script/jquery-1.7.2.js"></script>
+<script type="text/javascript">
+	//$是什么? 是jQuery核心函数的引用
+	/* 	alert($)
+		alert(jQuery)
+		alert($==jQuery) */
+		
+	//核心函数的4个作用
+	//1.传入参数为[函数]时：在文档加载完成后执行这个函数
+	$(function(){
+		//2.传入参数为[HTML字符串]时：根据这个字符串创建元素节点对象
+		//appendTo()向指定的标签内添加内容
+		$("<li>zealand</li>").appendTo("#city")
+		//使用单双引号交替实现嵌套
+		$("<a href='#'>zealand</a>").appendTo("body")
+		//3.传入参数为[选择器字符串]时：根据这个字符串查找元素节点对象
+		var city = $("#city");
+		alert(city)  //[object Object]
+		
+		//4.传入参数为[DOM对象]时：将DOM对象包装为jQuery对象返回
+		var obj = document.getElementById("city");
+		alert(obj) //[object HTMLUListElement]
+		var $obj = $(obj);
+		alert($obj)
+		
+	})
+</script>
+</head>
+<body>
+	<ul id="city">
+		<li id="bj">北京</li>
+		<li>上海</li>
+		<li>东京</li>
+		<li>首尔</li>
+	</ul>
+</body>
+</html>

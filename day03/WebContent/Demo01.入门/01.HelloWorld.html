@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HellojQuery</title>
+<!-- 引入jquery库 -->
+<script type="text/javascript" src="../script/jquery-1.7.2.js"></script>
+<script type="text/javascript">
+	
+	//在jquery中一切操作都是通过核心函数来完成的，$
+	//$是一个变量，指向一个函数，所以它是函数的引用
+	//console.log($()) 
+	//$()相当于window.onload() ,即文档加载完成之后触发此函数
+	$(function(){
+		//$("#btnId")获取button元素
+		//click（）事件方法
+		$("#btnId").click(function(){
+			alert("hello")
+		})
+	})
+
+</script>
+</head>
+<body>
+	<button id="btnId">SayHello</button>
+</body>
+</html>
