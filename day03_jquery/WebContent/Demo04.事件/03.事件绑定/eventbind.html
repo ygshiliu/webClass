@@ -7,7 +7,23 @@
 <script type="text/javascript">
 	/* 通过jquery绑定事件 */
 	$(function(){
-
+		
+		//常规事件操作
+		/*  $("p").click(function(){
+			alert($("p").text())
+		}) 
+		$("p").mouseover(function(){
+			$("img").css("display","block")
+		}) */
+		
+		//一次可以绑定多个事件
+		 $("p").bind("click mouseover",function(){
+			 alert($(this).text());
+		 })
+		 
+		 //解除指定事件
+		 $("p").unbind("mouseover");
+		
 	});
 
 </script>

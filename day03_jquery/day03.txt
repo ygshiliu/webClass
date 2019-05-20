@@ -130,12 +130,14 @@ JQuery
 					 同时还可以用来指定下拉列表、复选框、单选框的选中状态，指定一个数组
 			 
    [7] 文档加载
-	
+		浏览器引擎是由上到下，一行一行加载页面的
+		window.onload 会在当前文档及引入的外部资源全部加载完成之后才执行
+		$(function(){})会在当前文档加载完成之后立刻执行，不会等待外部资源是否加载完成
 			
 	[8] 事件
 		- jquery绑定事件：
 			1、 通过事件类型直接绑定事件
-				click、dblclick、mouseenter、mouseleave、mousemove、change[当表单项的value属性值改变并且失去了焦点 会被触发]
+				click、dblclick、mouseenter、mouseleave、mousemover、change[当表单项的value属性值改变并且失去了焦点 会被触发]
 			2、通过bind("type1 type2...." , function(){})方法一次绑定多个事件[一般用来绑定两个相反的事件  鼠标移入鼠标移出]
 			3、通过 祖先元素.delegate("后代元素选择器" , "type1 type2..." , function(){} )动态绑定事件[无论是页面中现有的标签还是后加入的都会绑定上事件]
 			4、通过unbind("type1 type2...") 解绑事件

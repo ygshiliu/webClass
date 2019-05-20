@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+	<!-- 
+		第1行是xml的版本声明，固定格式
+		xml是严格区分大小写字母的
+		xml文档中有且只有一个根标签
+		标签名必须符合命名规则
+		属性必须有值，且值必须使用引号括起来
+		标签不能交叉嵌套
+	 -->
+	<student id="1">
+		<name>xixi</name>
+		<age>18</age>
+	</student>
+	<student id="2">
+		<name>haha</name>
+		<age>19</age>
+	</student>
+	<student id="3">  
+		<name>yiyi</name>
+		<age>20</age>
+	</student>
+</students>
+

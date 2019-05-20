@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>Untitled Document</title>
+	<link rel="stylesheet" type="text/css" href="styleB/css.css" />
+	<script type="text/javascript" src="../../script/jquery-1.7.2.js"></script>
+	<script type="text/javascript">
+	
+	
+		$(function(){
+			//1.删除表格中的一行记录
+			//①.获取delete标签，绑定单击事件
+			$("a").click(remtr)
+			
+			
+			//2.向表格中添加一行记录
+			//获取按钮绑定单击事件
+			$("#addEmpButton").click(function(){
+				//①获取表单项中的值
+				var $name = $("#empName").val()
+				var $email = $("#email").val()
+				var $salary = $("#salary").val()
+				/* 
+				优化：对信息进行检验，是否符合规则	
+				可能通过正则表达式对数值进行检验
+				*/
+				var regName = /^[a-z0-9_-]{3,16}$/; //创建正则对象
+				//用来检验当前数据是否符合规则，返回boolean
+				var flag = regName.test($name); 
+				if(!flag){
+					alert("您输入的名字不符合要求，请重新输入。。")
+					//取消行为
+					return false;
+				}
+				
+				//对邮箱验证
+				regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+				flag = regEmail.test($email);
+				if(!flag){
+					alert("您输入的邮箱不符合要求，请重新输入。。")
+					return false;
+				}
+				
+				//对薪资验证
+				regSalary = /^([1-9][0-9]*)+(.[0-9]{1,2})?$/;
+				flag = regSalary.test($salary);
+				if(!flag){
+					alert("您输入的薪资不符合要求，请重新输入。。")
+					return false;
+				}
+				
+				//②将数值拼出一行标签
+				var $tr = $("<tr><td>"+$name+"</td><td>"+$email+"</td><td>"+$salary+"</td><td><a href='#'>Delete</a></td></tr>")
+				//③将标签插入表格中
+				$tr.appendTo("#employeeTable")
+				
+				//给后添加的a标签添加单击事件
+				$tr.find("a").click(remtr)
+				
+				//清空表单项
+				$("#empName").val("")
+				$("#email").val("")
+				$("#salary").val("")
+				
+			})
+			
+		});
+		
+		function remtr(){
+			/*
+			优化1：删除之前确认
+			优化2：解决后加入的标签删除无效
+			*/
+			//使用confirm(),会弹出一个带有确认取消两个按钮的对话框供选择，
+			//确认将返回true代表确实删除;取消返回false,代表取消操作 ，有可能是误操作
+			var $name = $(this).parents("tr").find("td:eq(0)").text();
+			var flag = confirm("你确定要删除 "+$name+" 吗");
+			if(!flag){
+				return false;
+			}
+			
+			//②.对delete所在的一行进行删除操作
+			//函数中可以使用this,获取函数所属对象
+			$(this).parents("tr").remove()
+			//在html中有些标签是有默认行为的，比如a会从当前页面跳转到href提定的页面
+			//type=submite  
+			return false;
+		}
+		
+	</script>
+	</head>
+	<body>
+	
+		<table id="employeeTable">
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Salary</th>
+				<th>&nbsp;</th>
+			</tr>
+			<tr>
+				<td>Tom</td>
+				<td>tom@tom.com</td>
+				<td>5000</td>
+				<td><a href="deleteEmp?id=001">Delete</a></td>
+			</tr>
+			<tr>
+				<td>Jerry</td>
+				<td>jerry@sohu.com</td>
+				<td>8000</td>
+				<td><a href="deleteEmp?id=002">Delete</a></td>
+			</tr>
+			<tr>
+				<td>Bob</td>
+				<td>bob@tom.com</td>
+				<td>10000</td>
+				<td><a href="deleteEmp?id=003">Delete</a></td>
+			</tr>
+		</table>
+	
+		<div id="formDiv">
+		
+			<h4>添加新员工</h4>
+	
+			<table>
+				<tr>
+					<td class="word">name: </td>
+					<td class="inp">
+						<input type="text" name="empName" id="empName" />
+					</td>
+				</tr>
+				<tr>
+					<td class="word">email: </td>
+					<td class="inp">
+						<input type="text" name="email" id="email" />
+					</td>
+				</tr>
+				<tr>
+					<td class="word">salary: </td>
+					<td class="inp">
+						<input type="text" name="salary" id="salary" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<button id="addEmpButton" value="abc">
+							Submit
+						</button>
+					</td>
+				</tr>
+			</table>
+	
+		</div>
+	
+	</body>
+</html>

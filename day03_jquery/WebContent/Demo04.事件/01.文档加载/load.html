@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="../../script/jquery-1.7.2.js"></script>
+<script type="text/javascript">
+	//文档加载完成之后触发
+	/* 
+		$(function(){}) 可以调用多次
+		window.onload 只会调用1次
+		通常我们在页面中只定义一次
+		
+		$(function(){})在当前文档加载完成之后就会立即执行
+		window.onload会在当前文档及当前文档引入的外部资源都加载成功之后执行
+		
+		加载外部资源的属性：href  src
+	*/
+/* 	$(function(){
+		alert("1111")
+	}) */
+/* 	$(function(){
+		alert("2222")
+	})
+	 */
+ 	window.onload=function(){
+		alert("aaaa")
+	} 
+/* 	window.onload=function(){
+		alert("bbbb")
+	} */
+</script>
+</head>
+<body>
+
+	<!-- <img src="http://www.baidu.com" alt="网址"/> -->
+	<!-- 
+	iframe 元素会创建包含另外一个文档的内联框架（即行内框架）。
+	作用：把资源引出到当前页面中
+	 -->
+	<iframe src="http://www.baidu.com"></iframe>
+
+</body>
+</html>
