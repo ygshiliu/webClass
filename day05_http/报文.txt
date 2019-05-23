@@ -1,0 +1,127 @@
+GET请求报文：
+
+GET格式：
+	请求首部
+			请求首行
+			请求头
+
+
+请求报文首行： 请求方式  url  协议
+	GET /day05_http/success.html?username=admin&password=34567a HTTP/1.1
+请求头：是由多个键值对组成，值是由一个或多个值组成
+	Host: localhost:8080     主机地址
+	Connection: keep-alive   保持长连接
+	Pragma: no-cache 		  
+	Cache-Control: no-cache  
+	Upgrade-Insecure-Requests: 1
+	浏览器信息
+	User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36
+	允许接收的文件信息类型，指定MIME值
+	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+	请求来源：可以用来做防盗链
+	Referer: http://localhost:8080/day05_http/index.html
+	可接收的压缩文档格式
+	Accept-Encoding: gzip, deflate, br
+	可接收的语言
+	Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
+
+============================================
+POST请求报文：
+
+POST格式 ：
+	请求首部
+			请求首行
+			请求头
+	空行
+	请求体
+
+
+请求首部
+	请求报文首行： POST请求方式  url  协议
+	POST /day05_http/success.html HTTP/1.1
+	请求头
+	Host: localhost:8080
+	Connection: keep-alive
+	Content-Length: 30
+	Pragma: no-cache
+	Cache-Control: no-cache
+	Origin: http://localhost:8080
+	Upgrade-Insecure-Requests: 1
+	用来指定请求体的编码方式：浏览器在提交信息给服务器时，会先进行编码，服务器收到后再进行解码
+	Content-Type: application/x-www-form-urlencoded
+	User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36
+	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+	Referer: http://localhost:8080/day05_http/index.html
+	Accept-Encoding: gzip, deflate, br
+	Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
+
+空行
+请求体：键值对，多值之间使用&符连接
+	username=%E5%91%B5%E5%91%B5&password=34567a
+
+===============================================
+响应报文：
+
+响应格式 ：
+	响应首部
+			响应首行
+			响应头
+	空行
+	响应体
+
+响应首部:
+响应首行： 协议  状态码  响应描述
+HTTP/1.1 200 OK
+响应头：
+Server: Apache-Coyote/1.1  服务器版本
+Accept-Ranges: bytes		接收数据类型
+ETag: W/"148-1558509201351"
+Last-Modified: Wed, 22 May 2019 07:13:21 GMT  最后修改时间
+Content-Type: text/html  响应体MIME类型
+Content-Length: 148    响应体长度
+Date: Wed, 22 May 2019 08:13:32 GMT   
+空行
+响应体：就是html文件
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>登录成功</h1>
+</body>
+</html>
+
+
+状态码：
+200 响应成功
+3xx  重定向
+4xx  浏览器端问题  404
+5xx  服务器端问题  500
+
+=====================================================
+
+除表单的method的属性设置为post外，发送的所有请求都是GET请求，反之为POST请求
+
+get请求与post请求的区别：
+
+get是通过url来传递参数的，可以直接看到，不安全。传递的参数是受限止的，最大是4k
+post是通过请求体来传递参数，不可以直接看到，需要通过工具查阅，相对安全。传递的内容不受限制
+
+
+============================================
+http://192.168.26.1:8080/项目名/资源路径/资源名
+
+http:// IP:8080/项目名/资源路径/资源名
+
+访问本机的服务有两种方式：localhost:8080  127.0.0.1:8080
+访问除本机之外的服务需要使用IP ： 192.168.10.254
+
+
+404: 响应状态码 路径不匹配
+
+http://localhost:8080/ROOT/index.html
+http://localhost:8080/ROOT/index.jsp
+
+浏览器与服务器进行交互时，实际是两个软件之间互相传递数据
