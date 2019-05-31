@@ -1,0 +1,62 @@
+图书项目阶段2开发步骤：
+1.建库建表
+	create database bookstore_xxxx;
+	create table bs_users(
+		id int(11) primary key auto_increment,
+		username varchar(20) not null unique,
+		password varchar(20),
+		email varchar(50)
+	)
+2.建工程 day06_bookstore_02
+3.加入需要的jar 
+	commons-dbutils-1.3.jar
+	druid-1.1.9.jar
+	mysql-connector-java-5.1.7-bin.jar
+4.配置文件jdbc.properties
+	driverClassName=com.mysql.jdbc.Driver
+	username=root
+	password=root
+	url=jdbc:mysql://localhost:3306/bookstore_xxxx
+5.分包并拷贝工具类
+	com.atguigu.servlet
+	com.atguigu.service
+	com.atguigu.dao (baseDao.java)
+	com.atguigu.util (jdbcutil.java)
+	com.atguigu.bean(bean主要用来封装数据,又称为vo 或 entity)
+	
+6.单元测试JDBCUtils方法
+7.创建与表对应的实体类 vo bean pojo 
+	public class User {
+		private Integer id;
+		private String username;
+		private String password;
+		private String email;
+		//getter/setter/toString/有参及无参构造器 方法
+	}
+8.创建UserDao接口
+	int saveUser(User user); //注册
+	User selectUserById(String username);  //登录
+9.创建User实现类，需要继承baseDao,实现userDao
+	public class UserDaoImpl extends BaseDao implements UserDao
+10.单元测试UserDao
+11.创建接口Userservice及实现类UserserviceImpl
+
+	public interface UserService {
+		//注册
+		public boolean regist(User user);
+		//登录
+		public User login(User user);
+	}
+12.实现注册功能，创建RegistServlet
+	-- Servlet与用户进行交互：接收请求参数，调用业务层，返回结果
+	
+13.将阶段1中的所有页面相关文件拷贝过来
+14.修改页面regist.html中的路径（使用绝对路径）	
+   --加入base标签
+   
+15.实现登录功能，创建LoginServlet
+16.修改login.html页面中的路径 
+17.设置乱码问题
+	Get请求：服务器上设置
+	Post请求：request.setCharacterEncoding("utf-8")
+	响应：response.setContentType("text/html;charset=utf-8")
