@@ -1,0 +1,182 @@
+
+
+1. jsp介绍
+	
+	java server page 运行在服务器上的页面，是不能脱离服务器运行的
+	jsp本质是html+servlet的整合体
+	servlet能做的，jsp也能做，使用jsp脚本元素来实现
+
+2.jsp运行原理 
+	
+	tomcat会先将jsp文件翻译成java文件，再将java文件编译成class文件，最后运行的就是class文件
+
+3.jsp脚本元素
+	
+	格式：以<%开头，以%>结尾
+	jsp页面更改后会自动加载部署，不需要重启
+	
+	①jsp脚本片段 
+		格式：<%  %>
+		作用：可以在其中写java语句，处理业务。在页面中可以出现多次。
+			  最终java代码会被原封不动的复制到_jspservice方法的对应位置中
+		注意：
+			在java方法中注意的事项，在jsp脚本片段中也要遵守
+			变量名不能重复
+			语句要以;结尾
+			不可以定义方法和静态代码块，带访问修饰符的成员变量
+			可以使用final修饰
+		
+	②jsp表达式
+		格式 ：<%=  %>
+		作用：将执行后的结果输出到页面中显示。其中可放入具体的数值，也可是变量;
+			它会被翻译成实参，如 out.print(j );
+		注意：不可以加;结尾
+		
+	③jsp声明
+		格式:<%!  %>
+		作用：将java代码原封不动的复制到类中，我们可在其中定义方法，成员变量，静态代码块
+		
+	④jsp注释
+		格式：<%-- jps注释 --%>
+		
+	区分注释：	
+		<%-- jps注释 --%> 仅在jsp页面中显示
+		<!--html注释  --> 在jsp页面，java文件，html文件中都可以显示
+		java注释（单多行、文档）在jsp页面和java文件中显示 
+		
+4.jsp中的指令标签
+	包括三种指令标签：page include taglib	
+	格式 ：<%@   %>
+	
+	①page指令
+		格式：<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+		作用：用来告诉jsp引擎如何解析jsp页面。通过属性指定。
+		
+		 共有15个属性可以进行设置：
+		 language="java" 用来指定当前jsp页面使用哪种语言，只有一种java
+		 contentType="text/html; charset=UTF-8" 设置响应头mime值及字符集
+		 pageEncoding="UTF-8"  翻译成java文件时使用的字符集
+		 autoFlush="true"  自动刷新缓存
+		 buffer="8kb"  设置缓存大小
+		 errorPage=""  指定跳转的出错页面
+		 extends=""	  给jsp翻译后的类指定父类
+		 import=""  用来导入类
+		 info=""  用来对jsp进行文本描述
+		 isELIgnored="false"  是否乎略EL表达
+		 isErrorPage="false" 是否是错误页面
+		 isThreadSafe="true" 
+			--是否支持多线程，设置false时，翻译后类后多实现一个接口javax.servlet.SingleThreadModel
+		 session="true" 是否创建session对象
+		 trimDirectiveWhitespaces="false" 这个命令可以使jsp输出的html时去除多余的空行（jsp上使用EL和tag会产生大量的空格和空行）。
+		 
+		 deferredSyntaxAllowedAsLiteral="false" 是否允许文本"#{"在页面中出现
+			--在JSP 2.1中，字符序列#{被保留给表达式语言使用，你不能在模板本中使用字符序列#{。如果JSP页面运行在JSP 2.1之前版本的容器中，则没有这个限制。对于JSP 2.1的容器，如果在模板文本中需要出现字符序列#{，那么可以将该属性设置为true
+		  
+	②include指令
+		格式：<%@ include file="index.jsp" %>
+		作用：将file属性指的资源复制到当前文件中。称为静态包含，合二为一，只翻译当前文件
+		
+	③taglib指令
+		格式：<%@taglib prefix="" tagdir="" uri="" %>
+		作用：向当前页面引入标签库
+		属性：
+		prefix:为标签指定前缀
+		uri:用来指定标签库路径
+		tagdir: 可以用来引入自定义的标签库，指向一个目录
+	
+5.JSP动作标签
+	
+	<!-- 用来转发页面 ,page用来指定路径，/代表项目根目录 -->
+	<jsp:forward page="/3.jsp"></jsp:forward>
+	可以通过<jsp:param name="" value=""/>传递请求参数 ，可以写多个
+	注意：此标签如果没有请求参数，标签体不能有空格。
+	
+	<!-- 动态包含 -->
+	<!-- 用来动态将3.jsp结果包含进当前文件中 -->
+	<!-- 实际会翻译成各自的java文件，然后通过include方法将结果引入 -->
+	<jsp:include page="/WEB-INF/3.jsp"></jsp:include>
+	
+	
+	jsp:include 和 @include 两者有什么区别？	
+	jsp:include 是动态包含，会翻译成两个java文件，通过调用include方法将运行结果输出到页面，是两个不同的文件可以定义相同的变量不会有冲突问题
+	@include 是静态包含，会翻译成1个java文件，将需要包含的文件内容原样复制到对应位置上，实际上合二为一就是一个文件，会有代码冲突
+	
+6.jsp中九大隐含对象
+	
+	javax.servlet.http.HttpServletRequest request
+	javax.servlet.http.HttpServletResponse response
+	javax.servlet.jsp.PageContext pageContext
+	javax.servlet.http.HttpSession session
+	javax.servlet.ServletContext application
+	javax.servlet.ServletConfig config
+	javax.servlet.jsp.JspWriter out
+	java.lang.Object page
+	java.lang.Throwable exception	
+	
+	request
+	类型：HttpServletRequest
+	功能：封装了请求报文，可以获取请求参数
+	
+	response
+	类型：HttpServletResponse
+	功能：向浏览器输出信息
+	
+	pageContext
+	类型：PageContext
+	功能：这是一个域对象，可以在当前页面中传递数据。另外可以通过它获取其它8个对象 
+	
+	session
+	类型：HttpSession
+	功能：它也是一个域对象，在一次会话间传递数据。
+	会话就是从打开浏览器到关闭浏览器为一次会话。
+	
+	application
+	类型：ServletContext
+	功能：代表整个web工程，同时也是一个域对象共享数据
+	
+	config
+	类型：servletConfig
+	功能：封装当前servlet的相关信息
+	
+	out
+	类型：JspWriter
+	功能: 向页面输出信息
+	
+	page
+	类型：Object
+	代表：当前实例
+	
+	exception
+	类型：Throwable
+	
+	
+	
+7.四个域对象
+	功能：作为一个容器在不同范围的资源中共享数据
+	
+	方法：
+	设置属性：setAttribute(name, value)
+	获取属性：getAttribute(name)
+	移除属性：removeAttribute(name)
+	
+	使用域原则：能使用小的，就不用大的
+	从大到小的顺序：application > session > request > pageContext
+	
+	作用范围：
+		pageContext：仅在当前页面有效
+		request ：一次请求有效
+		session ：一次会话，从打开浏览器到关闭浏览器期间有效，换个浏览器或重新打开浏览器之前的数据将丢失
+		application : 整个web应用有效，只要访问当前web应用就可以获取到。在服务器启动时创建，直至服务器关闭或重启才会失效
+
+		
+8.servlet与jsp分工
+
+	jsp
+	缺点：在jsp页面写java代码过多，维护起来非常麻烦，即不善于处理业务逻辑
+	优点：jsp善于处理页面，显示数据
+	
+	servlet
+	缺点：不善于处理页面
+	优点：善于与java代码打交道
+	
+	结论：使用servlet来处理业务逻辑，使用jsp来显示数据，两者配合工作		

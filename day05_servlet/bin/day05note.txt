@@ -1,0 +1,101 @@
+
+
+一. 实现servlet步骤：
+	
+	1. 写一个类实现servlet接口
+	2. 将servlet配置到web.xml
+
+二.web.xml中对servlet配置说明
+	 <!-- 用来在在服务器上配置servlet -->
+	  <servlet>
+		<!-- 是给配置的servlet起一个别名，在服务器中对servlet的一切操作都是基于别名的 -->
+		<servlet-name>HelloServlet</servlet-name>
+		<!-- 配置全类名，服务器会在底层使用反射的方式， 通过全类名创建对象-->
+		<servlet-class>com.atguigu.servlet.HelloServlet</servlet-class>
+	  </servlet>
+	  <servlet-mapping>
+		<!-- 通过指定的别名找到相应的servlet -->
+		<servlet-name>HelloServlet</servlet-name>
+		<!-- 配置 访问servlet的路径，提供给浏览器使用-->
+		<url-pattern>/hello</url-pattern>
+	  </servlet-mapping>
+	  
+三. servlet 的生命周期方法
+	
+	生命周期：人在出生到死的过程，称为生命周期	
+	servlet生命周期是指由服务器（servlet容器）创建到被销毁的过程
+	
+	构造器：在servlet被访问时调用，只调用1次，同时将实例交给servlet容器来管理，servlet是单例多线程的
+	void init(ServletConfig config)  ：在构造器调用后紧跟着调用，1次，主要用来对servlet做初始化操作
+	void service(ServletRequest req, ServletResponse res)  ：主要用来处理浏览器端发过来的请求，可以调用多次
+	void destroy() 	：关闭服务器或重启服务器时调用1次，销毁对象，主要是用来做收尾工作，比如释放资源，关闭连接等
+	
+	第1次访问servlet时：
+		helloservlet构造器被调用   1次  
+		init 被调用		1次
+		service 被调用
+	
+	第2次之后调用servlet时：只有service 被调用  多次
+	
+	关闭服务或重新服务器时：destroy 被调用  1次
+	
+四. 相关类
+	
+	以下由Servlet容器创建，并传入
+	ServletRequest ：用来封装浏览器端发送来的请求报文
+	ServletResponse: 用来封装服务器端返回的响应报文
+	ServletConfig: 封装了当前servlet的相关信息，比如servletname、初始化参数
+	ServletContext：是一个域对象，代表整个web工程
+	
+		//可以获取servletContext,每一个web工程有且只有一个servletContext
+		//代表整个web工程
+		//它是一个域对象,在整个web工程中共享数据。web中一共有4个域对象，这是其中最大的一个
+		/*主要作用：
+		*	1.共享数据
+		*	2.获取服务器上文件的物理地址
+		*	 
+		*	虚拟地址: http://localhost:8080/day05_servlet/hello?tag=haha
+		*	物理地址: D:\webspace\day05_servlet
+		*/
+		//获取工程初始化参数
+		ServletContext servletContext = config.getServletContext();
+		String web = servletContext.getInitParameter("web");
+		System.out.println(web);
+		
+		//获取物理地址值：D:\webspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\day05_servlet\pages
+		String realPath = servletContext.getRealPath("pages");
+		System.out.println("物理地址："+realPath);
+	
+五. 通过继承HttpServlet来实现servlet后，get请求最终doGet方法会被调用，post请求最终doPost方法会被调用 
+
+		HttpServlet  ---  GenericServlet  ---  Servlet
+														 ---  ServletConfig
+		
+		HttpServletRequest : 用来封装浏览器端发送来的请求报文，由servlet容器创建，可以直接使用
+			--1. 获取请求参数
+			--2. 获取请求路径
+			--3. 也是一个域对象 ，用来共享数据
+			--4. 可以转发请求
+			
+			>什么是转发？当前Servlet收到请求后，并不做任何处理，而交给其它servlet处理
+			>转发特点：
+				1）浏览器地址栏中路径没有改变
+				2）浏览器只发送了1个请求
+				3）可以访问到WEB-INF目录下的资源
+			
+		HttpServletResponse :用来封装服务器端返回的响应报文，由servlet容器创建，可以直接使用
+			--1. 可以给浏览器返回信息
+			--2. 重定向
+			
+			>什么是重定向？当前servlet收到请求后，会告诉浏览器重新发一条请求。在响应报文首部的状态码显示302，
+					同时响应头有一个location,指向重新发送请求的地址，然后浏览器收到会重新发送请求。如下
+					
+					HTTP/1.1 302 Found
+					Location: /day05_servlet/CServlet
+			>重定向特点？
+				1）浏览器地址栏中的路径有变化
+				2）浏览器发送了2个请求
+				3）不可以直接访问到WEB-INF目录下的资源
+					
+					
+			

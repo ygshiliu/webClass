@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>欢迎页面</h1>
+	
+	<a href="hello?tag=haha">访问</a>
+	
+	<a href="Aservlet">doGET</a>
+	<form action="Aservlet" method="post">
+		<input type="submit" value="doPOST">
+	</form>
+	
+	<form action="BServlet" method="post">
+		姓名：<input type="text" name="username"><br>
+		爱好:<input type="checkbox" name="hobby" value="pingpong">乒乓球
+		<input type="checkbox" name="hobby" value="basketball">篮球
+		<input type="checkbox" name="hobby" value="badminton">羽毛球
+		<input type="checkbox" name="hobby" value="football">足球<br>
+		<input type="submit" value="提交">
+	</form>
+	
+	<br>	
+	<a href="BServlet">重定向</a>
+</body>
+</html>

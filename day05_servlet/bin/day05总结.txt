@@ -1,0 +1,249 @@
+
+
+1、 Web环境搭建
+
+    > 服务器
+        硬件：提供服务的电脑
+        软件：安装了提供服务的服务器软件的电脑
+            服务器软件可以将硬盘上的项目映射成虚拟的url地址供网络中的其他计算机访问
+            服务器软件默认将服务器的webapps文件夹映射成虚拟的访问路径： http://ip地址:端口号
+            整合到sts中的tomcat服务器默认将当前工作空间的wtpwebapps文件夹映射成虚拟路径： http://ip地址:端口号
+    > Tomcat
+        - 安装
+            解压可用
+            需要配置正确的环境变量：
+                JAVA_HOME:  
+                path：  
+
+    > Eclipse整合Tomcat
+        - 在sts中已经安装了tomcat的插件，启动关闭部署项目使用的都是安装到sts中的tomcat，和原来的tomcat关系不大(运行仍然依赖于安装的bin目录)
+        - 在sts中启动tomcat服务器，默认部署项目的文件夹
+            D:\workspace\javaweb_180808\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps
+
+			http://ip地址:端口号/项目名
+		
+     > 动态项目创建
+            1、创建一个Dynamic web project
+            2、选择目标服务器运行版本 ：tomcat 7
+            3、选择 2.5 的moudle版本
+                
+		项目的目录
+			src:  java代码
+			WebContent    
+				WEB-INF ： 浏览器不能直接访问WEB-INF下的内容
+					lib： 第三方jar，动态项目不需要buildpath
+					web.xml 配置文件，如果没有 证明项目是3.0
+                        
+        部署项目到服务器：
+            sts部署的步骤：
+                1、在部署项目的文件夹 内创建一个项目名文件夹
+                2、将源码中的WebContent中的所有内容直接拷贝到部署的项目中
+                3、将src下的java类编译为class文件存放到部署的项目 WEB-INF/classes文件夹内
+            项目发布后，没有WebContent，开发中一般将其称为根目录
+
+2、 HTTP协议
+    - 浏览器和服务器之间数据传递的格式的规定
+    - 报文：
+			
+		> 格式：
+				报文首部【报文首行、报文头】
+				空行
+				报文体
+        
+		> 请求报文：浏览器传输给服务器的报文
+			【根据请求方式的不同分为GET请求报文和POST请求报文】
+			
+				---  GET请求报文：没有报文体和空行，通过url向服务器传输请求参数
+						格式：
+							 报文首部【报文首行、报文头】
+							
+						
+						
+				---  POST请求报文：通过报文体传递请求参数的
+						格式 ：
+							报文首部【报文首行、报文头】
+							空行
+							报文体
+						
+				GET请求与POST请求的区别：
+				在浏览器中发送的大部分请求都是Get请求，只有在表单的method=post时才会发送post请求
+				get请求是通过url来传递请求参数，参数是暴露出来的，相对不安全，同时浏览器对url传参的大小是有限制的
+				Post请求是通过报文体来传递请求参数，相对安全，浏览器对请求体是没有限制。
+			
+		
+		> 响应报文：服务器传输给浏览器的报文
+			格式 ：
+				响应首部
+				空行
+				响应体
+				
+				响应体就是我们在页面中看到的内容
+				
+				状态码：200 302  404  5000
+					2xx  成功相关
+					3xx  重定向相关
+					4xx  浏览端
+					5xx  服务器
+            
+            
+3、Servlet
+[1]Servlet简介  
+        服务器的小组件，server applet，由服务器(容器)管理创建对象销毁，调用方法
+        > 作用：接收浏览器发送的请求并做相应处理后返回响应
+            
+            
+        > 编写Servlet的流程
+            
+			1.创建一个类来实现servlet接口或继承 HttpServlet或GenericServlet抽象类
+			2. 在web.xml 中配置相应的标签，如下			
+            
+            在web.xml中配置Servlet
+                - 将Servlet告诉服务器
+                    <servlet>
+                        <servlet-name>Servlet的别名：可以随意命名但是需要符合java命名规范 ， 推荐使用简单类名</servlet-name>
+                        <servlet-class>Servlet的全类名： 必须正确</servlet-class>
+                    </servlet>
+                - 将Servlet映射为一个虚拟的url地址，供浏览器访问
+                    <servlet-mapping>
+                        <servlet-name>Servlet的别名</servlet-name>
+                        <!--    http://localhost:8080/项目名/AServlet   -->
+                        <url-pattern>Servlet的虚拟访问路径：必须以/开始 ， 相当于将servlet映射到了项目的根目录下[/AServlet]</url-pattern>
+                    </servlet-mapping>
+					
+[2] Servlet的生命周期    
+        是指servlet被servlet容器创建和销毁的过程
+		
+		构造器：servlet第一次被访问时调用，调用1次，底层使用的是单例多线程来处理业务
+		init(ServletConfig ) : 构造器调用完后紧跟着调用，调用1次，初始servlet相关的信息
+		servcie(ServletRequest,ServletResponse) ： 每次处理业务都会被调用 ，调用多次
+		destory() ：服务器停止或重启时被调用 ，调用1次，作用释放资源，做收尾工作
+        
+[3] 相关接口
+        ①ServletConfig  
+            > 每一个Servlet都有他唯一对应的ServletConfig。
+            代表：当前Servlet的配置信息
+            获取：服务器在调用init方法前会创建对象并传入，可以直接获取使用
+            功能：
+                1、获取servlet的别名
+                2、获取当前Servlet配置的初始化参数[在servlet配置信息的servlet标签内，全类名下]
+                          <init-param>
+                              <param-name>key</param-name>
+                              <param-value>value</param-value>
+                          </init-param>
+                3、获取全局上下文对象 
+					servletConfig.getServletContext()
+                
+                
+        ②ServletContext   
+            > 每一个WEB应用都有唯一的ServletContext对象，该对象会在项目启动时创建，在项目卸载时销毁。
+            代表：整个web应用
+            获取：config.getServletContext();  
+            功能：
+                作为域对象在整个项目的所有资源中共享数据
+                获取上下文路径[带/的项目名]    : context.getContextPath();
+                获取资源的真实路径： context.getRealPath();
+                
+[4] HttpServlet  extends GenaricServlet  implements Servlet, ServletConfig
+	
+	sts给我们提供了创建servlet的集成方式，会继承HttpServlet，同时会在web.xml中自动生成配置
+	我们只需要实现相应的doGet方法或doPost方法就可以
+	
+	***调用过程见<doget/dopost调用流程图>
+            
+[5] HttpServletRequest
+            代表：浏览器发送给服务器的请求报文                
+            获取: 由服务器创建并作为参数传给doGet或doPost方法，可以直接使用                
+            功能：
+					作为域对象共享资源
+					获取请求参数
+							request.getParameter("key")
+					做请求转发处理
+						
+			转发：当前servlet接收到请求后不处理，而是交给其它servlet
+			
+			特点：
+				浏览器路径没有变化
+				浏览器发送1次请求
+				转发发生在服务器端
+                
+[6] HttpServletResponse
+           代表：服务器发送给浏览器的响应报文                
+            获取：由服务器创建并作为参数传给doGet或doPost方法，可以直接使用 
+            功能：
+					向浏览传输内容
+					作请求的重定向
+			
+			重定向：当前servlet会通过响应头告诉浏览器重新发送请求到指定路径
+			
+			特点：
+				浏览器地址栏有变化
+				浏览器发送2次请求
+				重定向发生在浏览器端
+    
+        转发和重定向的区别
+			
+
+        
+
+        练习：
+            用户在login.html提交登录请求给LoginServlet
+                -获取请求参数
+                -判断用户是否存在
+                    -如果存在，登录成功：重定向到login-success.html成功页面
+                    -如果不存在，登录失败：转发到login-error.html 失败页面
+        
+
+[7]乱码    
+        浏览器与服务器使用的字符集不统一造成乱码		
+		
+		
+		情报联络站 --- 情报员 --- 译码本 （多套）--- 敌军也有情报员，情报员与情报员必须使用相同的译码本，才可能译码成功得到正确的情报信息。		
+		字符集：相当于译码本
+		ASCII  ISO-8859-1  GB2312  GBK  UTF-8
+		
+		怎么指定字符集？
+		浏览器（编码)向服务器(解码）发送请求：
+			浏览器在编码时是直接使用在页面中的指定字符集：<meta charset="utf-8">
+			服务器默认字符集是ISO-8859-1. 解码分两种情况：
+				1）Get请求时，服务器直接解码，我们需要在服务器的server.xml中配置URIEncoding="utf-8"属性
+				 <Connector URIEncoding="utf-8" connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+				2）Post请求时，需要在request.getParameter（）方法调用之前设置字符集
+					request.setCharacterEncoding("utf-8");
+		
+		服务器（编码）向浏览器（解码）返回响应：
+				//服务器设置编码字符集
+				response.setCharacterEncoding("utf-8");//只设置服务器端的编码，而浏览器端使用默认的字符集解码，不同浏览器有不同的字符集
+				response.setHeader("content-type", "text/html;charset=utf-8");//不仅可以指定服务器的字符集，还可指定浏览器的字符集
+				response.setContentType("text/html;charset=utf-8");//这是上一种的简洁版****推荐使用
+    
+[8]相对路径和绝对路径
+	>绝对路径	
+		在项目中尽量所有路径都使用绝对路径
+		绝对路径就是以/开头的路径 
+		
+		涉及到路径的地方：页面、web.xml、servlet类(重定向和转发)
+		
+		说明：最终/是由浏览器或服务器进行解析
+			若是浏览器进行解析，/代表http://IP:8080
+			若是服务器解析，/代表项目根目录
+		
+		URL格式 ： http://ip:8080/项目名/路径
+		
+		浏览器解析:
+			 页面中出现路径的地方，以/开头都需要加上项目名，比如src action href 
+			 (包括重定向）
+			 http://IP:8080/pages/user/login.html
+			 <a href="/day06_exercise/pages/user/login.html">登录</a>
+		
+		服务器：
+			web.xml 配置的url-patten 和servlet中的转发 ，/本身就代表项目名，就不需要再加项目名
+			
+	>相对路径 
+		就是路径中不以/开头的，相对当前的虚拟路径，是不断发生变化，不建议使用
+		
+
+[9]base标签
+	<!-- base标签会将href属性值作为前缀放在当前页面中所有相对路径的前面，对绝对路径不起作用 -->
+	base的本质是将相对路径变成了绝对路径 
+	<base href="/day06_exercise/">
+	注：在互联网上没有..
