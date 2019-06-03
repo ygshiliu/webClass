@@ -1,0 +1,62 @@
+项目阶段3优化步骤：
+
+1. 页面优化
+	
+	① 将html页面转成jsp页面
+		方法1：为每1个html文件创建对应的jsp页面，再将html代码复制到对应jsp文件中
+		方法2：复制page指令到html页面中，再将html文件后缀改成.jsp
+	
+	②提取公共代码
+		公共代码：css jquery base 
+			- 注意：将base标签设置成动态获取项目
+		client菜单：
+		managera菜单：
+		
+	③修改页面路径为绝对路径
+
+2. 完成项目阶段2未完成的信息提示功能，如注册失败|登录失败
+	
+	①登录失败数据回显
+		- 提示：您输入的用户名或密码不正确
+		- 把刚输入的用户名显示出来，以便用户对比
+	
+	②注册失败
+		-注册数据回显
+		-失败信息提示
+
+3.servlet代码优化
+	
+	针对servlet进行功能分类，与用户相关的如登录注册我们封装成UserServlet，我们可以在前端设置一个标识告诉后台怎么处理，后台收到请求后根据这个标识调用相应的方法
+	注：表单提交时，使用表单项设置标识符，如<input type="hidden" name="method" value="login">
+	
+		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//获取请求参数处理标识
+		String method = request.getParameter("method");
+		
+//		优化1：根据标识调用对应的方法，缺点：需要手动不停修改代码，不断的else if,servlet问题又演变成else if问题
+//		if("login".equals(method)) {
+//			login(request,response);
+//		}else if("regist".equals(method)) {
+//			regist(request, response);
+//		}
+		
+//		优化2：通过方法名，以反射方式调用
+		//获取Class 
+		Class cla = this.getClass();
+//		获取Method:getDeclaredMethod(String name, Class<?>... parameterTypes) 
+		try {
+			
+			Method declaredMethod = cla.getDeclaredMethod(method, HttpServletRequest.class,HttpServletResponse.class);
+//		调用invoke:invoke(Object obj, Object... args) 
+//			设置访问权限：setAccessible(boolean flag)
+//			declaredMethod.setAccessible(true);
+			declaredMethod.invoke(this, request,response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+//		优化3：复用代码，可以采用baseDao的思路，创建一个BaseServlet用来被继承
+//		   后面我们再创建servlet时只需要继承BaseServlet ，然后关注我们要实现的方法就可以
+//		注意：doGet与doPost不能出现在子类中
+		
+	}

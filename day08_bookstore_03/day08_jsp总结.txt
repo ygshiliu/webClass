@@ -1,0 +1,147 @@
+JSP  
+    [1] 简介  
+		jsp模版 -- 实际上它是披着html的servlet
+		
+        用来编写动态网页的技术 
+        HTML:   不能够动态的显示数据 ， 但是写标签方便
+        Servlet: 编写java逻辑代码方便，也可以通过response对象给用户设置一个动态的页面 ， 但是书写页面太麻烦
+        jsp： HTML+Servlet，以页面的形式开发，又可以编写标签又可以写java代码
+
+    [2] 运行原理
+        > Jsp本质就是Servlet
+            - 服务器接受到访问jsp的请求时，会先将jsp页面翻译为Servlet文件，然后再运行
+            - 翻译后的Servlet类继承了HttpJspBase extends HttpServlet
+            - 翻译后的Servlet在tomcat的web.xml中统一进行了配置[servllet、 servlet-mapping]
+        > 服务器处理第一次访问JSP页面请求时的流程
+            - 先将jsp页面按照jsp语法翻译为Servlet.java文件
+            - 在将servlet编译为class文件
+            - 服务器调用servlet.class的生命周期方法处理请求[构造器、init、service]
+            
+            
+    [3] 基本语法
+        > 学习jsp就是学习服务器如何将jsp页面翻译为Servlet文件的
+        > 模板元素  ：
+            html内容[html标签+注释]
+            翻译： 翻译到servlet的service方法中  作为out.write()的字符串参数写入到响应体中[最终被浏览器解析显示]
+        > 脚本片段 ：  java代码块
+            语法： <%   //java代码 %>
+            翻译： 翻译到servlet的service方法中[按照顺序直接拷贝到service方法中]
+            作用：一般通过多个jsp脚本片段拼接控制页面标签的显示
+        > 表达式  ： 变量
+            语法：<%=表达式%>
+            翻译： 翻译到servlet的service方法中  作为out.print()的参数写入到响应体
+            作用： 向响应体中输出变量的值
+        > 注释
+            - 会被解析器忽略的内容
+            - 1、html注释： 用来注释html内容，会被jsp引擎翻译到servlet文件中作为out.write()的字符串参数写入到响应体交给浏览器，不会显示
+            - 2、java注释： 用来在jsp脚本片段中注释java,会被jsp引擎翻译到servlet文件中，会被jvm忽略
+            - 3、jsp注释： 可以注释jsp页面中的所有内容，会被jsp引擎忽略，翻译后的Servlet文件中没有了
+                        jsp相关技术需要使用jsp注释
+    [4] JSP指令
+        > 格式：<%@指令名 属性名1="属性值1" 属性名2="属性值2" %>
+            
+        > page指令    <%@ page    %>
+            - page
+                - 可能会用到的属性
+                - import  用来导包
+                - contentType  用来告诉浏览器使用哪种编码解析当前页面 相当于response.setContentType("text/html;charset=UTF-8");
+                - pageEncoding  当前jsp页面被服务器翻译时告诉服务器使用哪种编码解析
+                - errorPage 当前页面发生错误要跳转的页面
+                - isErrorPage   声明当前页面为一个错误页面，如果是错误页面 翻译后的servlet中会出现exception对象
+
+                
+        > include指令     重要
+            - 静态包含其他页面到当前页面中
+            - 语法：<%@ include file="引入页面的路径" %>
+                    引入页面地址：必须使用绝对路径， 绝对路径由服务器解析，基准地址到项目名
+            - 特点： 运行时，服务器先将目标页面代码拷贝到当前页面中，再将当前页面翻译为servlet，编译为class文件，再执行
+                只有一个文件被翻译编译运行，效率高
+            - 应用： 将页面中公有的部分提取，在需要使用提取的页面的 页面中通过include指令静态包含
+                修改时只需要修改提取的页面即可
+				
+    [5] JSP动作标签
+        > JSP动作标签最终都会被翻译为一套java代码，在程序中执行。
+    
+        > 语法： <jsp:标签名 属性名="属性值"></jsp:标签名>
+            
+        > 转发标签：<jsp:forward page="转发页面路径"></jsp:forward>
+                - jsp所有相关技术使用的绝对路径都是由服务器解析
+        
+    [6] 隐含对象   
+        > 在JSP中一共有9个隐含对象，这个9个对象我可以在JSP的service方法中直接使用。
+        > 因为在service方法已经对这个九个隐含对象进行声明及赋值，所以可以在JSP中脚本片段和表达式直接使用。
+            - pageContext/request/session/application/response/out/config/page/exception
+            - pageContext
+                类型：PageContext
+                代表：页面上下文对象，可以在当前页面范围内共享数据
+                作用：获取其他8个隐含对象/域对象
+            - request
+                类型：HttpServletRequest
+                代表：请求对象、请求域对象
+                作用：获取请求报文数据， 转发、 可以在一次请求中共享数据
+            
+            - session
+                类型：HttpSession
+                代表：会话对象[浏览器打开第一次访问服务器开始到浏览器关闭]
+                作用：在一次会话范围内共享数据
+
+            - application
+                类型：ServletContext
+                代表：整个web应用
+                作用：可以在整个项目不同的web资源中共享数据[servlet、jsp、  组件]
+            --------------------------------------------------------------------------
+            - response
+                类型：HttpServletResponse
+                代表：响应报文对象
+                作用：向响应体中写内容/重定向
+                
+            - out
+                类型：JspWriter
+                代表：输出流
+                作用：响应页面或片段
+            
+            - config
+                类型：ServletConfig
+                代表：当前servlet的配置信息
+                作用：获取当前servlet的配置信息
+            
+            - page
+                类型：Object 在service方法中有如下代码 Object page = this;
+                代表：当前jsp页面对象
+                作用：没用
+            
+            - exception：当前jsp页面是错误页面时才有此对象
+                类型：Throwable
+                代表：页面中可能发生的异常信息
+                作用：获取发生的异常信息
+    
+    
+        > 在Jsp中一共有四个域对象pageContext 、request、session、application。
+            - 能够在一定范围内共享数据
+			
+        > 域对象都有以下方法：
+            - 每个域对象内部都维护了一个Map<String , Object>
+            设置属性到域中：void setAttribute(String key , Object value);
+            从域中获取指定的属性：Object  getAttribute(String key);
+            移除域中指定属性：void removeAttribute(String key);
+			
+        > 我们四个域对象分别有其不同的范围：
+            pageContext: 当前页面，离开失效，每个页面都有自己唯一的一个pageContext对象，servlet没有
+            request： 一次请求中共享数据
+                [转发、直接访问一个页面]  [重定向、  打开页面再点击页面中的超链接  ]
+            session： 一次会话范围中共享数据
+                只关心浏览器是否关闭，不关心服务器关闭重启
+                不同浏览器不共享会话
+            application： 在服务器运行的一次过程中共享数据
+                    服务器关闭销毁
+        - 为了避免内存泄漏，使用域对象时尽量挑选范围小的
+		
+    [7] JSP与Servlet分工
+        > jsp可以完成Servlet的所有功能，本质就是一个Servlet，是对Servlet的扩展
+        > jsp支持以页面的形式进行开发，可以在页面中直接书写标签+java代码+java变量
+        > jsp页面如果大量的使用java代码，会造成页面可读性差，出现错误不能断点调试
+        > 开发中
+            使用Servlet处理业务逻辑，编写java代码
+                - servlet中的数据存到域中共享
+            使用jsp页面显示数据给用户查看
+                - jsp从域中获取数据使用
