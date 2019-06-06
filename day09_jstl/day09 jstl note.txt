@@ -1,0 +1,173 @@
+
+一、jstl介绍
+
+	jstl 用来替换jsp中的jsp脚本片段，实现页面逻辑处理
+	jstl ( JSP Standard Tag Library ) 是Sun公司定义的一套通用的标签库，共有5个标签库。
+		
+		核心标签库   又叫c标签库 c
+		格式化标签库 对日期数字进行格式处理 fmt
+		函数标签库	 主要是针对字符串处理的	fn
+		数据库标签库（不使用）sql
+		XML标签库 （不使用）x
+	
+	jstl使用上非常像标签，但实际上它会调用一段java代码来完成相应的功能
+	
+二、使用步骤：
+	
+	1.引入jar包
+	2.在jsp页面中使用jsp指令标签tablib 引入要使用的标签库：
+		prefix:指定标签前缀，可以任意起名，通常有固定的前缀
+		uri:指定要引入哪个标签库
+		<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	3.可以像使用jsp动作标签一样使用，注意前缀使用c
+
+三、C标签库
+
+	<!-- 作用：将value属性指定的值输出到页面
+		类似jsp表达式及EL表达式
+		通常jstl标签的使用与EL结合使用
+		
+		default:用来指定默认值
+		escapeXml:是否解析特殊字符,默认为true
+	 -->
+	<c:out value="${name }" default="xixi" escapeXml="false" ></c:out>
+	
+	<!-- 向域中设置数据，默认pageContext -->
+	<!-- 
+		scope用来指定域 
+		var指定在域中的key
+		value指定值
+	-->
+	<c:set  scope="request" value="18" var="age"></c:set>	
+	<br>年龄：${requestScope.age }
+	
+	
+		
+	<!-- 
+		类似：java中的if语句
+		作用：用来处理页面中条件逻辑输出，满足条件才会执行 
+		test:用来判断是否满足条件，返回boolean，为true才会执行
+	-->
+	<c:if test="${empty str }">
+		域中没有设置属性str<br>
+	</c:if>
+	
+	<!-- 
+		类似java中的if..else if ... else if... else
+		注：
+			choose是when 和 otherwise的父标签，它们不可以脱离choose标签使用
+			所有when都没有满足的情况下，otherwise会被执行
+			注意设置条件判断时的先后顺序，有一个满足后面就不会执行了
+	 -->
+	 <c:choose>
+	 	<c:when test="${cj>60 }">
+	 		及格
+	 	</c:when>
+	 	<c:when test="${cj>70 }">
+	 		一般
+	 	</c:when>
+	 	<c:when test="${cj>80 }">
+	 		良好
+	 	</c:when>
+	 	<c:when test="${cj>90}">
+	 		优秀
+	 	</c:when>
+	 	<c:otherwise>
+	 		需要提升
+	 	</c:otherwise>
+	 </c:choose>
+	 
+		 
+	<!-- 实现循环处理，与java中的for对比学习
+		- 可以模拟出分页数字
+			begin:用来指定初始值
+			end:用来指定终值
+			var:将每次遍历的值，以var指定的值为key,以遍历的值为value设置到pageContext域中，有效范围是在标签内
+			step:用来设置步长，默认是1
+		- 可以遍历集合，将元素分别取出显示到页面中
+			items:用来获取集合
+			var:将每次遍历的元素取出作为value, 以var指定的值为key 存放到pageContext域中，有效范围是在标签内
+		- 遍历map时，每次是一个entity即一个key=value形式
+			varStatus:会将当前遍历的元素相关信息封装LoopTagSupport对象
+			count:用来获取当前元素在集合中的顺序，从1开始，通常我们可以用它在页面中充当编号使用
+			index:在集合中的下标，从0开始
+			first:用来判断是否为第1个，返回boolean值
+			last:用来判断是否为最后1个，返回boolean值
+	 -->
+	  <c:forEach items="${map }" var="entity" varStatus="vs">
+		${entity}<br>
+	<%--  	${entity.key}<br>
+		${entity.value}<br> --%>
+		LoopTagSupport:${vs}<br>
+		顺序：${vs.count}<br>
+		下标：${vs.index}<br>
+		是否为第1个：${vs.first}<br>
+		是否为最后1个：${vs.last}<br>
+		
+		<hr>
+	 </c:forEach>
+	 
+	 <br> 
+	 <br>
+	 <br>
+	 
+	 
+	 <c:forEach items="${list }" var="user" >
+		${user.id }<br>
+		${user.name1 }<br>
+		${user.email }<br>
+	 </c:forEach>
+	 
+	 <br> 
+	 <br>
+	 <br>
+	 
+	 
+	<c:forEach begin="1" end="10" var="page" step="2" >
+		<a href="#">${page }</a>
+	</c:forEach>
+
+	
+	<!-- 
+	用来重写url路径 ，如果是绝对路径会加上项目名，如果是相对路径而没有什么变化
+	同时会在第1次访问页面时产生“jsessionid=362571F525D458BCA32AB93E2B2188F8”字符串附加在url路径后面
+	以后再访问服务器，浏览器都会带着这个字符串。这个字符串就是浏览器与服务器之间通过的标识
+	
+	value:指定需要重写的url
+	var:将重写后的url设置一个作为域中的键名
+	scope:指定要存放的域
+	
+	注：如果指定var则会将url保存到域中，不会输出显示;否则反之
+	 -->
+	<c:url value="/index.jsp"   ></c:url>
+	==== ${index }
+	<!-- 可以实现重定向到url指定的位置
+		注意路径优先使用绝对路径，而在这里的/代表的是项目名
+		url:指定要重定向的url
+	 -->
+ 	<c:redirect url="/index.jsp" ></c:redirect> 
+
+四、函数标签库
+
+	主要是针对字符串的一些操作，可以对照java中的String类中提供的方法来学习
+	通常函数标签库要结合EL表达式一起使用
+	
+	<br>fn:length:${fn:length(str) } 输出字符串长度
+	<br>fn:contains:${fn:contains(str,"llo") } 输出boolean
+	<br>fn:contains:${fn:contains(str,"LLO") } 不忽略大小是否包含子串
+	<br>fn:containsIgnoreCase:${fn:containsIgnoreCase(str,"LLO") } 忽略大小写是否包含子串
+	<br>fn:endsWith:${fn:endsWith(str,"rld") }  是否以子串结尾
+	<br>fn:startsWith:${fn:startsWith(str,"hell") } 是否以子串开始
+	<br>fn:indexOf:${fn:indexOf(str,"ll") } 返回子串的位置，没有返回-1
+	<br>fn:join:${fn:join(arr,"-") } 将字符串数组使用连接符拼起来
+	<br>fn:split:${fn:split(str,"-")} 将字符串拆分成数组 ***
+	<br>fn:substring:${fn:substring(str,2,4) } 截取子串
+	<br>fn:toLowerCase:${fn:toLowerCase("YOU ARE OK！") } 转小写
+	<br>fn:toUpperCase:${fn:toUpperCase("are you ok?") } 转大写
+	<br>fn:toUpperCase:${fn:trim("   hello   , honey ") } 去掉前后空格
+	
+五、练习
+
+	1.导入jar包
+	2.在页面中引入标签库
+	3.使用
