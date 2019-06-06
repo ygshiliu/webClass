@@ -1,0 +1,186 @@
+
+
+1. 
+	JSP页面中书写大量的jsp脚本片段会让代码维护性变得极差，可读性也不好，故改进方案：
+		EL来取代JSP表达式 :常量 、变量、表达式
+		JSTL来取代JSP脚本片段
+
+
+2. EL (Expression language) 
+	EL是JSP内置的表达式语言，用以访问页面的上下文以及不同作用域中的对象 ，取得对象属性的值，或执行简单的运算或判断操作
+	可以从域、请求参数、请求头、初始化参数等中获取数据
+	域：pageContext\request\session\application
+	特点：
+		EL只能做读操作，不能写操作;
+		如果读取的数据为null,则什么也不会输出（不会像jsp表达式输出null）
+
+3.EL基本语法
+	
+	格式：${ 表达式 }
+	表达式：可以是一个变量、常量、数据运算表达式
+	
+	
+		<body>
+			<h1>index.jsp</h1>
+			
+			<%
+				pageContext.setAttribute("user'agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36");
+			
+				pageContext.setAttribute("name", "wang");
+				request.setAttribute("name", "xixi");
+				session.setAttribute("name", "haha");
+				application.setAttribute("name", "yiyi");
+				
+				User user = new User(1, "xixi", "xixi@163.com");
+				pageContext.setAttribute("user", user);
+				
+				User user1 = new User(1, "xixi", "xixi@163.com");
+				User user2 = new User(2, "haha", "haha@163.com");
+				User user3 = new User(3, "yiyi", "yiyi@163.com");
+				List list = new ArrayList();
+				list.add(user1);
+				list.add(user2);
+				list.add(user3);
+				pageContext.setAttribute("list", list);
+				
+				Map map = new HashMap();
+				map.put("user-1", user1);
+				map.put("user-2", user2);
+				map.put("user3", user3);
+				pageContext.setAttribute("map", map);
+			%>
+			
+			<br>
+			<!-- 1.向页面输出常量值 -->
+			${"123123"}
+			${1111 }
+			${1111-111 }
+			${1111+111 }
+			${1111/111 }
+			<br>
+			<!-- 2.变量:
+				默认是从域中获取，会从小到大的顺序依次查找，找到就返回
+				域：pageContext request session application
+				与域对象对应的内置对象：pageScope requestScope sessionScope applicationScope
+				可以指定查找位置。在EL表达式中内置了11个对象，可以通过指定对象来查找数据
+				
+				会话：一次打开浏览器到关闭浏览器的过程
+			 -->
+			${name}
+			${pageScope.name}
+			${requestScope.name}
+			${sessionScope.name}
+			${applicationScope.name}
+			
+			<br>
+			<!-- 3.对象
+				获取对象属性，可以使用'对象.属性'
+				有el表达式中.操作的是对象相应的getter方法
+				
+				getter/setter是javaBean中的标配
+				标准的javaBean具备属性私有化，同时提交属性的getter/setter方法，无参构造
+			 -->
+			${user }
+			${user.name1 }
+			${user.email }
+			${user[email] }
+			
+			<br>
+			
+			<!-- 4.获取list集合中的数据 -->
+			${list }<br>
+			${list[0] }
+			
+			<p> 获取map集合中的数据:
+			${map }
+			<br>获取map中的一个键值对：map.key
+			<br>
+			<!-- 
+			5.特殊名字表达方式
+			EL会对获取的数据自动进行类型转换
+			当变量名中含有特殊字符时，可以使用 map['xxx']  map["xxx"]
+			如果是list集合，中括号中指定下标
+			如果是map集合，中括号中指定key
+			 -->
+			${map['user-1']}
+			${map.user3}
+			
+			<br>
+			</p>
+			
+			
+			
+		</body>
+	
+4. EL中的隐含对象 
+
+	<body>
+		<h1>1.jsp</h1>
+
+		<%
+		Cookie cookie = new Cookie("name","wnn");
+		response.addCookie(cookie);
+		%>
+
+		<p>
+
+			El中内置了11个对象：pageContext pageScope requestScope sessionScope applicationScope param paramValues
+			header headerValues initParam cookie
+		</p>
+		<p>
+		<hr>
+			类型：PageContext
+			作用：与jsp中pageContext一样，可以获取其它8个jsp内置对象
+			<br>${pageContext }
+		<hr>
+			<![CDATA[
+			类型：Map<String,Object>
+			作用：与域对应，用来在指定域获取数据 	
+			]]>
+			<br>${pageScope}
+			<br>${requestScope}
+			<br>${sessionScope}
+			<br>${applicationScope}
+			
+
+		<hr>	
+			<![CDATA[
+			类型：Map<String,String>
+			作用：用来从请求参数中获取1个key的1个数据
+			]]>
+			<br>${param}
+			
+		<hr>	
+			<![CDATA[
+			类型：Map<String,String[]>
+			作用：用来从请求参数中获取相同key的多个数据
+			]]>
+			<br>${paramValues}
+			
+		<hr>
+			<br><![CDATA[
+			类型：Map<String,String>
+			作用：用来从请求参数头中获取1个key的1个数据
+			]]>
+			<br>${header}
+		<hr>
+			<br><![CDATA[
+			类型：Map<String,String[]>
+			作用：用来从请求头中获取相同key的多个数据
+			]]>
+			<br>${headerValues}
+		<hr>
+			<br><![CDATA[
+			类型：Map<String,String>
+			作用：用来获取jsp对应的servlet配置信息中的初始参数
+			]]>
+			<br>${initPrama}
+		<hr>
+			<br><![CDATA[
+			类型：Map<String,cookie>
+			作用：用来获取cookie
+			]]>
+			<br>${cookie}
+
+
+	</body>
