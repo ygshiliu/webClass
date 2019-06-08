@@ -1,0 +1,181 @@
+
+一、后端图书管理开发步骤：
+
+1.创建表bs_books
+
+	编号 名称 价格  作者 销量 库存 封面
+	create table bs_books(
+	id int(11) auto_increment primary key,
+	title varchar(20) not null,
+	price double(11,2),
+	author varchar(10),
+	sales int(11),
+	stock int(11),
+	img_path varchar(100)
+	)
+	
+	注：我们这里是将图片保存在本地服务器上，并将路径保存在mysql数据库中，实际开发中图片或文档是保存在文件服务器中的。
+	
+2.创建与bs_book表对应的javabean类
+	
+	private Integer id;
+	private String title;
+	private Double price;
+	private String author;
+	private int sales;
+	private int stock;
+	private String imgPath;
+	
+	对应的getter/setter方法，有无参构造器，toString()方法
+	
+3.创建BookDao接口和BookDaoImpl实现类
+	public void saveBook(Book book); 向数据库中插入一本图书
+	public void deleteBook(String bookId); 根据图书的ID删除一本图书
+	public void updateBook(Book book); 更新一本图书
+	public Book getBookById(String bookId); 根据图书的ID查询一本图书
+	public List<Book> getBookList(); 获取所有的图书
+	
+	注：BookDaoImpl extends BaseDao implements BookDao
+
+4. BookDaoImpl单元测试类
+5.创建BookService接口和BookServiceImpl实现类
+	public void saveBook(Book book); 向数据库中插入一本图书
+	public void deleteBook(String bookId); 根据图书的ID删除一本图书
+	public void updateBook(Book book); 更新一本图书
+	public Book getBookById(String bookId); 根据图书的ID查询一本图书
+	public List<Book> getBookList(); 获取所有的图书
+
+6.后台图书管理
+	①创建一个ManagerBookServlet来处理crud
+	②实现图书列表
+		>在ManagerBookServlet中定义方法findBook()
+		>在方法中调用BookService方法，获取图书信息
+		>将图书信息保存到request域中
+			-servlet中只能获取3个域，jsp中可以获取4个域
+		>转发到图书列表pages/manager/book_manager.jsp
+			- 导入jstl的jar包
+			- 在页面中使用taglib导入核心标签库
+			- 使用c:forEach遍历展示数据
+		
+	③实现删除图书
+		>在ManagerBookServlet中定义方法DeleteBook()
+		>获取请求参数bookId
+		>调用 BookService.deleteBook(bookId)
+		>重定向到图书列表pages/manager/book_manager.jsp
+		>处理book_manager.jsp中的url
+		>优化删除过程：绑定单击事件--确认之后再删除
+		
+	④实现添加图书
+		>在ManagerBookServlet中定义方法saveBook()
+		>在方法中获取图书相关信息，并封装成Book
+		>调用service保存图书
+		>重定向到图书列表
+		>更新book_edit.jsp页面
+			-修改页面提交请求的处理路径，请求方式设置成post
+			-修改表单项的name属性
+		
+		优化：beanUtils工具解决数据封装问题
+			-导入beanUtils包
+				commons-beanutils-1.8.0.jar
+				commons-logging-1.1.1.jar
+			-使用BeanUtils.populate(bean, map);
+		
+	⑤实现修改图书
+		>在ManagerBookServlet中定义方法getBookById()
+		>根据bookid获取对应图书，并设置到request域中
+		>转发到修改页面book_edit.jsp，并将数据展示出来
+		>修改book_manager.jsp页面中的修改链接
+		
+		>在ManagerBookServlet中定义方法updateBook()
+		>在此方法中获取图书信息，并保存到数据库
+		>重定向图书列表
+		
+	⑥合并修改与添加图书功能
+		>在ManagerBookServlet中定义方法saveOrUpdateBook()
+		>获取图书信息
+		>根据图书id有无值调用不同方法
+			-Id有值调用修改图书方法
+			-ID为null调用添加图书方法
+		>重定向图书列表
+		>重新设置book_edit.jsp页面
+	
+7.解决中文乱码
+	因为发送的是post请求，需要在获取请求参数之前设置解码字符集，即baseServlet中设置，否则不启作用
+
+8.分页显示图书列表
+	
+	SELECT * FROM bs_books LIMIT 下标，显示条数
+	下标是从0开始
+	如：
+	SELECT * FROM bs_books LIMIT 11,5  
+	# 下标   显示条数  页码
+	#   0      5       1页
+	#   5      5       2
+	#   10     5       3
+	#   15     5       4
+	#下标=（页码-1）* 显示条数
+	
+	> 定义一个Page<T>类
+		- List<T> list
+		- int pageNo //当前页
+		- int pageSize //显示条数
+		- int totalCount //总条数
+		- int totalPage  //总页数
+		
+		list、totalCount是从数据库查询得到
+		totalPage是通过计算得到
+		pageNo、pageSize 可以通过前台传递过来
+		
+	> 在BookDao接口及实现中创建getPage()
+		- 先查询总条数
+		- 再查询显示的数据		
+	> 单元测试
+	> 在BookService及实现类中创建findPage()
+	> 在ManagerBookServlet定义findPage()分页查询处理的请求方式
+		-获取请求参数 （当前页、显示条数）
+		-调用 service层方法
+		-将page设置到域中
+		-转发到页面
+		-更改book_manager.jsp
+		
+	> 完成页面页码展示	不需要掌握，了解
+		
+		总页数小于5，全部显示出来，begin=1,end=totalPage
+		总页数大于5，但是当前页小于3，begin=1,end=5
+		总页数大于5，但是当前页大于3，begin=当前页-2，end=当前页+2
+		  - end 大于总页数，begin=总页-5，end =总页数
+		<!-- 重新指定begin end -->
+		<c:choose>
+			<c:when test="${page.totalPage<=5 }"> 
+				<c:set var="begin" value="1" ></c:set>
+				<c:set var="end" value="${page.totalPage}"></c:set>
+			</c:when>
+			<c:when test="${page.pageNo<=3 }">
+				<c:set var="begin" value="1" ></c:set>
+				<c:set var="end" value="5"></c:set>
+			</c:when>
+			<c:otherwise>
+				<c:set var="begin" value="${page.pageNo-2 }" ></c:set>
+				<c:set var="end" value="${page.pageNo+2 }"></c:set>
+				<c:if test="${end>=page.totalPage }">
+					<c:set var="begin" value="${page.totalPage-5 }" ></c:set>
+					<c:set var="end" value="${page.totalPage }"></c:set>
+				</c:if>
+			</c:otherwise>
+		</c:choose>  
+	
+二、前台首页图书管理开发步骤：
+
+	> 提取页面分页代码 include/page.jsp
+	> index.jsp引入page.jsp
+	> BookDao接口及实现类创建方法 getPageByprice()
+		- getPageByPrice(Page<Book>) 根据条件查询分页图书信息
+	> BookService接口及实现类
+	> ClientBookServlet处理请求
+	> 修改index.jsp
+		-在pages目录下创建client目录
+		-将index.jsp复制到pages/client/下
+		-修改webcontent/index.jsp，让其转发到ClientBookServlet中
+		-修改pages/client/index.jsp显示数据
+		-查询参数回显使用${param}
+	

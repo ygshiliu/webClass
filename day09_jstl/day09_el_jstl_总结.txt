@@ -1,0 +1,238 @@
+1、EL表达式     
+    [1] 简介
+        JSP2.0之后  不推荐使用jsp表达式和jsp脚本片段，提供了新的技术替代
+        
+        EL用来替代JSP表达式向页面输出，不能调用没有返回值的方法
+        JSP EL只能在jsp页面中使用
+        EL表达式取不到值，则什么都不显示。同时会对值自动类型转换
+        
+    [2] 基本语法
+        > ${EL表达式}
+        > EL表达式可以从域中获取属性。
+             -El默认的功能就是根据属性名从域中取值
+                - ${key }  
+                    > 全域查找
+                        从最小域到最大域遍历查找，找到值则返回，找不到则什么都不显示
+                - ${xxxScope.key}   
+                    > 指定域查找key属性对应的属性值
+                        pageScope、requestScope、sessionScope、applicationScope
+                - ${bean.属性名}  
+                    > 获取对象的指定的属性值
+                        先根据key [bean] 去域中全域查找对应的值，找到后自动类型转换， 通过属性名的形式去调用对象的 get属性名方法得到属性值显示到页面中
+                - ${map.key}  
+                    > 获取map指定键对应的值
+                        键没有特殊符号  ${map.key}
+                        键有特殊符号  ${map['t1-1']}
+                - ${list[index]}  
+                    > 获取list或数组指定索引对应的元素
+
+    [3] 隐含对象  
+        
+        > EL中一共有11个内置对象。  
+            pageContext:  
+                代表：与jsp的pageContext类似
+                作用：用来获取jsp的其他8个隐含对象
+                应用：获取上下文路径：  ${pageContext.request.contextPath}
+    
+            pageScope：
+                类型：Map<String,Object>
+                代表：pageContext域中的数据
+                作用：获取page域中的数据  ${pageScope.key}
+
+            requestScope：
+                类型：Map<String,Object>
+                代表：request域中的数据
+                作用：
+            sessionScope：
+                代表：Map<String,Object>
+                作用：
+            applicationScope：
+                代表：Map<String,Object>
+                作用：
+            
+            param:   
+                类型：Map<String , String>   
+                代表：一个键对应一个值的请求参数
+                作用：获取请求参数  
+                
+            paramValues：
+                类型：Map<String , String[]>
+                代表:一个键对应多个值的请求参数
+                作用：${paramValues.hobby[index] }    
+                
+            header：
+                类型：Map<String , String>
+                代表：一个键对应一个值请求头数据
+                作用：    ${header['User-Agent']}
+
+            headerValues：
+                类型：Map<String, String[]>
+                代表：一个键对应多个值的请求头数据
+                作用：
+            cookie：
+                类型：Map<String , Cookie>
+                代表：请求头中的cookie
+                
+            initParam：
+                类型：Map<String , String>
+                代表：jsp翻译后的Servlet的配置文件中的初始化参数
+    
+    [4] 运算
+        > 在EL中可以直接使用运算符进行运算。
+            ${1+2}
+            ${user.age+user1.age}  
+            ${param.age>18}
+            ${user==null?"用户为空":user}
+            ${param.age+1}
+            
+        > 在EL中可以使用Empty元素符做空值判断：   
+            ${empty list }   如果list集合为null或长度为0 ， 返回true
+            ${empty str }   如果str为null或长度为0  返回true
+            ${empty user }  如果user为null [除了集合和字符串有长度，其他类型没有长度]  返回true
+            ${!empty list}  如果集合不为null并且长度不为0， 则返回true
+            
+            注：==空值判断只能判断值是否为null，不能判断集合或字符串长度是否为0
+            
+    [5] EL表达式和jsp表达式的区别
+        
+        结果区别：
+            EL表达式取不到值则什么都不会输出
+            jsp表达式取不到值则输出null
+        
+        书写区别：
+            ${requestScope.age}
+            <%=request.getAttribute("age") %>
+
+        
+
+2、JSTL（JSP Standard Tag Library）
+    [1] JSTL简介  
+        > JSTL是JSP的标准标签库，它包含五个标签库
+            核心标签库 c
+            函数标签库 fn
+            格式化标签库 fmt
+            sql标签库
+            xml标签库
+        
+        > JSTL为我们提供了一些常用的标签，供我们日常开发使用（if 、 if...else 、遍历 、 日期格式化）
+        > 标签库[每一个JSTL标签都对应了一套java代码]
+    
+    [2] 核心标签库    
+        使用步骤：
+            -导jar包：
+                taglibs-standard-impl-1.2.1.jar
+                taglibs-standard-spec-1.2.1.jar
+            -在要使用jstl的jsp页面中引入标签库  ： jsp:标签名
+                <%@taglib  uri="要使用的库的唯一的标识"  prefix="标签库标签的前缀"  %>
+                核心标签库：c     遍历 判断...
+                函数标签库：fn   字符串处理
+                格式化标签库：fmt 日期时间的格式化
+        
+        
+        标签一般结合EL表达式使用        
+         c:out  
+         作用：向页面输出值[jsp表达式、el表达式]
+         例子：<c:out value="" default="" escapeXml=""></c:out>
+         属性：
+            value :  要显示到页面中的值，一般使用EL取出
+            default :  如果value值为空则显示默认值
+            escapeXml ： 如果value值中有html的特殊符号，会自动转义，浏览器不会解析，默认值true
+                    false： 不处理，浏览器会解析执行
+        
+        c:set
+        作用：向域中设置属性值[request.setArribute("key","value")]
+        例子：<c:set var="name" value="" scope="request"></c:set>
+        属性：   
+            var ： 要存储的属性名
+            value ：要存储的属性值
+            scope ：指定域存储
+                    默认存到pageContext域中
+                page/request/session/application
+                
+            
+        c:remove
+        作用：移除域中指定的属性值[request.removeAttribute("key");]
+        例子：<c:remove var="name" scope="session"/>
+        属性：
+            var ：要移除的属性名
+            scope ： 指定域移除
+                默认 全域移除
+                page/request/session/application
+                
+        c:if   
+        作用 ：相当于java中的if语句 [if(条件){//代码块}]
+        例子：    
+            <c:if test="${empty param.name }">
+                <h3>您没有输入name属性！</h3>
+            </c:if>
+        属性：
+            test: if语句执行的条件，需要boolean类型的值
+                一般通过el表达式判断得到
+        
+        c:choose c:when c:otherwise    
+        作用：相当于java中的 if()-else if()- else
+        例子：
+                <c:choose>
+                    <%-- 这个可以有--%>
+                    <c:when test="${param.score == 100 }">
+                        <h3>恭喜您考了100分！</h3>
+                    </c:when>
+                    <c:otherwise>
+                        <h3>恭喜你，你不及格！</h3>
+                    </c:otherwise>
+                </c:choose>
+            -c:choose  用来创建一个if-else语句的结构，没有其他作用
+                c:when 创建if或 else if语句
+                    test属性：语句执行的条件
+                c:otherwise 相当于else
+            - choose只能有when和otherwise子标签
+            - choose中可有有多个when子标签，最多有一个otherwise子标签
+            - 多个子标签之间是互斥关系，最多只能执行一个标签
+            - when标签之间的条件有包含关系，范围小的在上
+            
+            
+            
+        forEach  
+            作用1：遍历集合 for(Item item:items){}
+                例子：   map.put("key1" ,"value1"); map.put("key1" , "value2");
+                    <c:forEach items="${list }" var="hero">
+                        ${hero} <br />
+                    </c:forEach>
+                
+                    -- 遍历map比较少见
+                    <c:forEach items="${map }" var="item">  {key1=val1 , key2=val2}
+                        ${item.key} --- ${item.value}
+                    </c:forEach>
+                属性：
+                    items属性： 指定要遍历的集合 ， 通过el取出
+                    var属性： 标签每次遍历可以得到集合中的一个元素，然后标签将元素存到pageContext域中，属性名就是var的值，遍历完成后标签会移除var的值对应的元素
+                    
+            作用2：遍历一组数    for(int i=1;i<=5;i++){}
+                例子：
+                    <c:forEach begin="1" end="20" var="index" step="2">
+                        <a href=#>${index}</a>
+                    </c:forEach>
+                属性：
+                    begin：  遍历起始索引值，必须>=0
+                    end: 遍历结束索引值
+                    var：标签每次会将正在遍历的索引值存到pageContext域中，var的值就是属性名 [pageContext.setAttribute("index" , 1)]
+                    step: 步进
+                    
+    [3] 函数标签库    必须结合EL表达式使用  
+        格式 ：${fn:函数名()}
+        
+		<br>fn:length:${fn:length(str) } 输出字符串长度
+		<br>fn:contains:${fn:contains(str,"llo") } 输出boolean
+		<br>fn:contains:${fn:contains(str,"LLO") } 不忽略大小是否包含子串
+		<br>fn:containsIgnoreCase:${fn:containsIgnoreCase(str,"LLO") } 忽略大小写是否包含子串
+		<br>fn:endsWith:${fn:endsWith(str,"rld") }  是否以子串结尾
+		<br>fn:startsWith:${fn:startsWith(str,"hell") } 是否以子串开始
+		<br>fn:indexOf:${fn:indexOf(str,"ll") } 返回子串的位置，没有返回-1
+		<br>fn:join:${fn:join(arr,"-") } 将字符串数组使用连接符拼起来
+		<br>fn:split:${fn:split(str,"-")} 将字符串拆分成数组 ***
+		<br>fn:substring:${fn:substring(str,2,4) } 截取子串
+		<br>fn:toLowerCase:${fn:toLowerCase("YOU ARE OK！") } 转小写
+		<br>fn:toUpperCase:${fn:toUpperCase("are you ok?") } 转大写
+		<br>fn:toUpperCase:${fn:trim("   hello   , honey ") } 去掉前后空格
+		
+		注：可结合java.lang.String类有的常用方法对比学习！
