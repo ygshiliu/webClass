@@ -3,7 +3,7 @@
 	create database bookstore_xxxx;
 	create table bs_users(
 		id int(11) primary key auto_increment,
-		username varchar(20) not null unique,
+		username varchar(20) not null ,
 		password varchar(20),
 		email varchar(50)
 	)

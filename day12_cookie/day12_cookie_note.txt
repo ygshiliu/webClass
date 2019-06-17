@@ -1,0 +1,72 @@
+
+
+一、cookie使用步骤
+	
+//		1.创建cookie
+		Cookie cookie = new Cookie("username", "xixi");
+		Cookie cookie1 = new Cookie("produce", "phone");
+		
+		String addr = URLEncoder.encode("地址","utf-8");
+		String addrValue = URLEncoder.encode("昌平","utf-8");
+		
+		Cookie cookie2 = new Cookie(addr,addrValue );
+		
+		
+//		2.发送给浏览器
+//		会向响应报文中添加一个响应头：Set-Cookie: produce=phone
+//		向响应报文中添加几个cookie，响应报文中就有几个set-cookie
+//		当浏览器访问服务器时会在请求报文中添加一个请求头：Cookie: produce=phone
+//		可以创建多个cookie一起发送给浏览器
+//		注意：cookie中不可以使用中文，否则报java.lang.IllegalArgumentException: Cookie name "地址" is a reserved token
+		
+		response.addCookie(cookie);
+		response.addCookie(cookie1);
+		response.addCookie(cookie2);
+		
+		//3.获取cookie
+		Cookie[] cookies = request.getCookies();
+		//遍历
+		if(cookies!=null) {
+			for (Cookie cookie : cookies) {
+				String name = cookie.getName();
+				String value = cookie.getValue();
+				if(name.contains("%")) {
+					name=URLDecoder.decode(name, "utf-8");
+					value=URLDecoder.decode(value, "utf-8");
+				}
+				System.out.println(name+">"+value);
+				
+			}
+		}
+二、Cookie的时效问题
+
+	cookie是由浏览器来保存的，它默认是保存在浏览器的运行内存中，浏览器关闭则内存清空，数据也就丢了。
+	即cookie的默认有效时长是一次会话，与服务器没有关系。
+	
+	//设置有效时间（单位：秒）
+	//expiry可以设置正负数和0
+	//正数为到期时间，0则立即删除，负数不会保存
+	//设置正数，则Set-Cookie:username=xixi; Expires=Mon, 10-Jun-2019 02:26:04 GMT
+	cookie.setMaxAge(60*60);
+	//设置0，则Set-Cookie:produce=phone; Expires=Thu, 01-Jan-1970 00:00:10 GMT
+	//返回响应就删除
+	cookie1.setMaxAge(0);
+	//设置负数，什么都不带，即一次会话，默认设置
+	cookie2.setMaxAge(-60*60);
+	
+三、cookie路径
+	
+	cookie默认路径是项目根目录
+	
+	//设置cookie路径，是由浏览器解析，/代理服务器的根目录，路径前面需要加上项目名
+	//Set-Cookie:produce=phone; Path=/day12_cookie&session/a
+	//只有访问指定路径下的资源，才会带着此cookie
+	cookie1.setPath(request.getContextPath()+"/a");
+	
+四、cookie存在的问题
+	
+	1.cookie是保存在浏览器上，每次访问服务器都会带着，无形间增加的增加了网络流量
+	2.不同浏览器对cookie是有大小限制，使用上有局限性
+	3.数据是保存在浏览器上不安全
+
+五、练习cookie 免登录

@@ -1,0 +1,92 @@
+sessionID---standardSession(1587) 研究ID怎么来的
+
+1.session介绍
+
+	我们去银行办理银行帐户
+	先明确一点，我们只要去银行就一定是开帐户吗？显然不是，我们有可能是咨询业务。只有带着相关资料明确要开户时，才是开户。
+	然后柜台工作人员经过一番神操作后，会交给你一个银行卡。下次来银行若想操作帐户，只要带着这长银行卡就可以，存钱或取钱了。
+	另外帐户我们只需办理一次就好。
+
+	我们好比浏览器，银行好比服务器，帐户就是我们说的session，银行卡就是cookie
+	同理，浏览器访问服务器，只有在调用request.getSession()时才会创session对象，而每一个session对象都有一个唯一标识符，在创建session对象的同时也会创建一个以JSESSIONID为键，以session对象的唯一标识符为值的cookie交给浏览器，浏览器取到后会保存cookie,并且每次访问服务器都会带着这个cookie，而服务器就可以根据这个JSessionID来操作对应的session对象了
+
+	那从这个角度来说，Session是cookie的一个扩展，是与cookie协同工作
+
+2.创建session
+			//创建session
+//		是在第一次调用request.getSession()时才会被创建，第二次及以后访问就不会创建
+//		Set-Cookie:JSESSIONID=41DA2628BD0C833B262AF276C23B735A; Path=/day12_session; HttpOnly
+//		jsessionId是由容器分配的唯一标识，容器中的每一个session都有一个唯一标识
+		HttpSession session = request.getSession();
+		
+		//获取sessionID
+		String id = session.getId();
+		System.out.println("sessionId:"+id);
+		
+	---------------------
+	
+		//JSESSIONID我们称为唯一标识符
+		//是由容器根据时间戳+机器码产生，可以说是全世界唯一，重复率极低的字符串
+		//时间戳是指从1970-01-01 00：00：00 到现在的毫秒数
+		//除作为对象的标识外,也可作为表的主键
+		//在java中提供了UUID工具,可以获取唯一标识符
+		String str = UUID.randomUUID().toString();
+		str = str.replace("-", "").toUpperCase();
+		System.out.println(str);
+		
+		
+	
+3.设置session空闲时间
+		//获取session的空闲时间
+		//空闲时间是指session最后一次被访问到有效时间为止，而不是从创建session开始
+		//设置空闲时间可通过两种 方式，1种是在web.xml中配置
+		//
+		/*	通常在自己的web.xml中配置session空闲时间 ，单位分钟
+		<session-config>
+	        <session-timeout>20</session-timeout>
+	    </session-config>
+	    */
+		//2种可以通过代码设置
+		session.setMaxInactiveInterval(60);
+		//单位：秒,默认是1800秒=30分
+		int i = session.getMaxInactiveInterval();
+		System.out.println(i);
+
+4.session创建过程图解
+	cookie的有效时间默认是一次会话。而这一次会话是没有准确的时间限制的，有可能是1分钟，有可能是10分钟，有可能是半小时，也有可能是1天，这取决于浏览器打开到关闭的时间。
+	而session有明确的失效时间，默认是半小时，或者设置的时间，但是这个时间是最后操作时间开始计时的，到指定失效时间为止。
+	那我们来想个问题，有没有可能浏览器从打开后就一直没有关闭，同时创建完session后在失效时间内就一直没有操作呢？那在session失效之后，浏览器再次访问服务器照样会带着JSESSIONID，因为浏览器没有关闭一直保存着JSESSIONID，那这时服务器能正常获取到对应的session对象吗？
+	
+	
+	
+5. session的活化与钝化
+
+	钝化：就是在失效之前，如果session没有被使用，会将session对象从内存中保存到磁盘上，从而不在占用内存空间
+	活化：就是当session被使用时，再从磁盘上加载到内存中使用
+	
+	1.配置活化钝化，在server.xml中加入如下（一般不使用）
+	<Manager className="org.apache.catalina.session.PersistentManager" maxIdleSwap="1">
+	  <Store className="org.apache.catalina.session.FileStore" directory="mySession"/>
+	</Manager>
+	PersistentManager：持久化管理
+	maxIdleSwap:session的闲置时间，超过之后会自动钝化到硬盘中，单位分钟
+	directory:session钝化后的目标文件夹
+	
+	注：如果希望Session域中的对象也能够随Session钝化过程一起序列化到磁盘上，则对象的实现类也必须实现java.io.Serializable接口。不仅如此，如果对象中还包含其他对象的引用，则被关联的对象也必须支持序列化，否则会抛出异常：java.io.NotSerializableException
+	
+6.jsp页面
+	
+	第一次访问jsp页面时也会创建一个session对象及相应的cookie
+
+7.表单的重复提交 
+	
+	所谓表单重复提交，就是将相同的数据提交多次，会生成一些垃圾数据占用我们的内存或数据库空间，这种行为通常是恶意攻击服务器。
+	
+	情况1：我们这里使用的是get请求提交数据为看得清楚，但通常提交数据使用post方式，问题的关键是使用转发跳转页面
+		- 解决方案 ：使用重定向跳转页面 （能使用重定向跳转页面，绝对不使用转发）
+			
+	情况2：模拟由于网络问题，一直没有反应的问题
+		- 解决方案：使用js将按钮失效
+		
+	情况3：提交表单后，点击浏览器回退按钮，情况2中设置的按钮失效不起作用
+		- 解决方案：使用token 令牌，在表单及session域中同时设置令牌，然后在servlet中将请求参数中的token与session域中的token进行对比，一致则代表是第1次提交，同时删除session域中的token.。否则为重复提交
