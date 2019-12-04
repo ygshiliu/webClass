@@ -1,0 +1,228 @@
+
+1.登录/登出
+	
+	登录：
+		可以根据是否显示用户信息来判断用户是否登录。
+		
+		步骤：
+		>如果登录成功，可以将用户信息放session域中
+			- 在UserServlet:login()处理
+		>在页面中根据session域中是否有user对象判断是否登录,从而显示不同的页面效果
+		
+	登出：
+		> 在userServlet中添加logout(),使用session失效,并回到首页
+		> 修改client.jsp页面路径
+
+2.防止注册信息重复提交
+
+	服务器生成验证码字符串放入session ，同时将验证码字符串生成图片交给浏览器显示出来 --- 然后客户手动根据图片输入验证码 --- 验证码与表单项信息一起提交到后台--- 将session中的验证码字符串与表单中的验证码字符串进行对比，一致则代表第1次提交，正常处理业务，同时将session域中的验证码移除。不一致则代表多次提交，不处理
+		
+	可以使用google提供的第三方jar实现
+	步骤：
+		>导入kaptcha.jar
+		>在web.xml中进行配置
+		>修改regist.jsp页面中验证码路径
+
+3.购物车
+	
+	-保存购物车信息有3种方案：
+		cookie --保存在浏览器端，缺点增加网络流量且不同浏览有大小限制等缺点
+		session  -- 保存在服务器端，没有大小限制，缺点是保存在内存中，一但服务器停止将会丢失 v
+		数据库 -- 保存数据库中，数据不会丢失，在不同浏览器间都可以访问到
+	
+	我们购物车是基于session的，所以我们不用创建dao及service层
+	
+	Cart: 购物车  用来临时存放购物商品
+		int totalCount
+		double totalAmount
+		Map<bookid,CartItem> map
+
+	CartItem: 购物项  用来代表某一种图书
+		Book book;
+		int count
+		double amount
+		
+	步骤：
+	> 创建Cart 和CartIterm
+	> cart类中定义方法
+		addBook2Cart(Book book) 向购物车中添加图书
+		deleteCartItemByBookId(String bookid) 删除指定的购物项
+		clearCart() 清空购物车
+		updateCountByBookid(String bookid,int count) 更新cartItem数量
+		getCartItem(String bookId) 根据图书id获取cartItem
+		getCartItemList()  获取购物项信息
+		
+	> 完成购物车的CRUD请求，需要创建CartServlet
+		
+		- 添加图书到购物车			 
+			1) 在CartServlet中定义addBook2Cart方法
+				根据bookid获取图书，再将其添加到购物车中
+			2)修改首页路径
+		
+		- 展示列表
+			由于我们的购物车是基于session,我们可以直接到cart.jsp页面展示
+			
+		- 删除购物项
+			1)在CartServlet中定义 deleteCartItemByBookId方法
+			2)获取session中的cart调用删除
+			3)返回购物车cart.jsp页面
+			4)添加删除确认事件
+			
+		- 更新购物项数量
+			1) 在CartServlet中定义updateCountByBookid方法
+			2) 获取指定向bookId及修改数量
+			3) 调用 cart中的方法
+			4) 返回cart.jsp页面
+			5) 修改cart.jsp页面，将cartItem数量修改成文本框，并添加change事件
+			
+		- 清空购物车
+			1)在CartServlet中定义clearCart方法
+			2)调用 cart中的方法
+			3) 返回cart.jsp页面
+			4) 修改cart.jsp页面路径
+4.结帐
+	
+	结帐的过程实际就是清算的过程，是将购物项生成订单的过程
+	转成订单及对应的购物详情并保存
+	减库存，增销量，做统计
+	清空购物车
+	返回订单号
+	
+	我们可以查订单及订单详情
+	
+	生成订单后分两方面处理，一个是客户角度，可以查订单及状态
+	另一方面是管理的角度，管理订单及状态
+	
+	之前购物车是基于session来管理的，这里订单我们使用数据库来保存
+	
+	---------------------
+	
+	订单号：
+	
+	拼多多：
+	190525-059899577030047
+	190519-526883882070047
+	190511-051299615990047
+	190509-200957625130047
+	
+	淘宝：
+	495190657896388716
+	469952832943388716
+	299063884285388716
+	299320302165388716
+	299050796613388716
+	497241410050388716
+	
+	京东：
+	81720960470
+	81622978900
+	81179475787
+	80470040483
+	78233812472
+	72328606681
+	
+	不能透露出公司的信息
+	方便售后
+	
+	订单id可以采用唯一标识+用户id 表示
+	
+	---------------------
+	步骤：
+	-1 建表
+		CREATE TABLE `bs_orders` (
+		  `id` varchar(100) NOT NULL primary key unique,
+		  `create_date` timestamp NOT NULL ,
+		  `state` int(2) ,   #'0 已付款 1已发货 2 已接收 3交易完成'
+		  `user_id` int(11) DEFAULT NULL,
+		  total_count int(11),
+		  total_amount double(11,2)
+		)
+		
+ 
+		 CREATE TABLE bs_order_details(
+			 id INT(11) AUTO_INCREMENT PRIMARY KEY,
+			 title VARCHAR(50),
+			 price DOUBLE(11,2),
+			 author VARCHAR(20),
+			 img_path VARCHAR(100),
+			 order_id VARCHAR(100),
+			 bcount INT(11),
+			 amount DOUBLE(11,2)
+		 )
+
+	-2 建order及OrderDetail
+		order:
+			String id	订单编号
+			Date createDate 创建日期
+			int state 订单状态
+			double totalCount 订单数量
+			double totalAmount 订单金额
+			int userId;
+			
+		orderDetail:
+			Integer id 
+			String title
+			double price
+			String author
+			String imgPath
+			int bcount 图书数据
+			double amount 图书金额
+			String order_id
+			
+	-3 建orderDao及OrderDetailDao 和对应实现类
+		
+		orderDao：
+			void createOrder(Order order) -- 保存订单
+			List<Order> getAllOrder()   --提供给管理员
+			List<Order> getOrderByUserId(String userId)  --提供给客户使用
+			int updateOrderState(String orderId,String state) --更新订单的状态
+		
+		OrderDetailDao：
+			void saveOrderDetail(OrderDetail od) --保存订单详情
+			List<OrderDetail> getOrderDetailByOrderId(String orderId) --查寻指定订单的订单详情
+
+	-4 创建OrderService和OrderDetailService接口及实现类
+	
+		>定义OrderService及实现类
+			//创建订单，返回订单id -- 订单状态0
+			String createOrder( Cart cart,User user);
+			//修改订单状态--商家发货 -- 1
+			void sendGoods(String orderId);
+			//修改订单状态 -- 客户接货 -- 2交易完成
+			void takeGoods(String orderId);
+			//获取订单  --提供给管理员
+			List<Order> getAllOrder() ;
+			//获取用户订单--提供给客户使用
+			List<Order> getOrderByUserId(String userId) ;
+			
+		>定义OrderDetailService及实现类
+			//查询指定订单的订单详情
+			List<OrderDetail> getOrderDetailByOrderId(String orderId) ;
+
+	-5 完成客户结帐
+		
+		1)创建OrderServlet并创建createOrder方法
+		2)创建findOrder完成客户订单展示
+		3)创建findOrderDetailsByOrderId完成订单详情展示
+		4)创建takeGoods方法确认接货
+
+	-6 完成管理订单
+		
+		1)创建OrderManagerServlet并创建findManagerOrder方法显示订单列表
+		2)创建sendGoods方法发货
+		3)完成页面
+
+
+5.事务处理
+	1)添加过滤器
+		-设置字符集
+		-用户登录
+		-事务
+	2)使用相同的数据库连接
+		-修改JDBCUtil获取及删除连接的方式
+		-修改BaseDao层代码，修改获取数据库连接及关闭方式
+		-在TransactionFilter中取消数据库自动提交行为
+		-异常统一处理
+
+
+

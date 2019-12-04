@@ -1,0 +1,57 @@
+
+一、Filter介绍
+	java web组件：servlet filter listener
+		servlet 主要用来接收请求，返回响应
+		filter 主要用来拦截浏览器与服务器之间的请求和响应
+		listener 主要用来监听域对象及其属性的添加、删除等事件
+
+二、创建Filter步骤
+	①写一个类实现javax.servlet.Filter
+	②在web.xml中进行配置
+		  <!-- 主要用来配置过滤器对象 -->
+		  <filter>
+			<!-- 定义别名 -->
+			<filter-name>FirstFilter</filter-name>
+			<!-- 配置全类名，服务器会根据全类名通过反射的方式创建对象 -->
+			<filter-class>com.atguigu.filter.FirstFilter</filter-class>
+		  </filter>
+		  <!-- 主要用来配置过滤器映射 -->
+		  <filter-mapping>
+			<!-- 定义别名 -->
+			<filter-name>FirstFilter</filter-name>
+			<!-- 指定要拦截的路径 -->
+			<url-pattern>/index.jsp</url-pattern>
+		  <!-- 	<url-pattern>/*</url-pattern> -->
+			 <url-pattern>/a/*</url-pattern>
+			 <url-pattern>*.do</url-pattern>
+	
+		  </filter-mapping>
+		  
+	
+			url-pattern配置规则：
+			1.精确匹配：就是拦截路径与请求的资源路径完全一致。如：/index.jsp
+			2.路径匹配：当请求的资源在指定的目录下时会被拦截。如：/a/* 
+				/*是一种特殊的路径匹配
+			3.后缀匹配：当路径以指定的后缀请求资源时就是会拦截。如：*.jsp *.htm *.do
+			
+			
+			filter除拦截路径匹配外也可以使用servlet-name进行拦截
+				<servlet-name>SecondFilter</servlet-name>
+					
+	
+三、Filter生命周期方法
+
+	构造器  在服务器启动时被调用，1次
+	init()  构造器调用完成后立即被调用，1次
+	doFilter() 每次拦截请求资源时都会被调用，n次
+	destroy() 服务器停止时调用 
+	
+四、与Filter相关的接口
+
+	FilterConfig 主要用来封装Filter标签中的信息
+	ServletRequest 主要用来封装浏览器发送给服务器请求报文
+	ServletResponse 主要用来封装服务器发送给浏览器的响应报文
+	FilterChain 主要放行拦截到下一个过滤器，若后面没有过滤器则调用目标资源
+
+五、多个过滤器顺序
+	根据在web.xml中配置的先后顺序依次执行

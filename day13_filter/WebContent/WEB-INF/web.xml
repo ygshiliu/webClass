@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>day13_filter</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <!-- 主要用来配置过滤器对象 -->
+  <filter>
+  	<!-- 定义别名 -->
+  	<filter-name>FirstFilter</filter-name>
+  	<!-- 配置全类名，服务器会根据全类名通过反射的方式创建对象 -->
+  	<filter-class>com.atguigu.filter.FirstFilter</filter-class>
+  </filter>
+  <!-- 主要用来配置过滤器映射 -->
+  <filter-mapping>
+  	<!-- 定义别名 -->
+  	<filter-name>FirstFilter</filter-name>
+  	<!-- 指定要拦截的路径 -->
+  	<url-pattern>/index.jsp</url-pattern>
+  <!-- 	<url-pattern>/*</url-pattern> -->
+  <url-pattern>/a/*</url-pattern>
+ <url-pattern>*.do</url-pattern>
+  	<!-- 
+  	url-pattern配置规则：
+  	1.精确匹配：就是拦截路径与请求的资源路径完全一致。如：/index.jsp
+  	2.路径匹配：当请求的资源在指定的目录下时会被拦截。如：/a/*
+  	3.后缀匹配：当路径以指定的后缀请求资源时就是会拦截。如：*.jsp *.htm *.do
+  	  	
+  	 -->
+  </filter-mapping>
+  
+  <filter>
+  <filter-name>SecondFilter</filter-name>
+  <filter-class>com.atguigu.filter.SecondFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  <filter-name>SecondFilter</filter-name>
+  <url-pattern>/index.jsp</url-pattern>
+  <servlet-name>SecondFilter</servlet-name>
+  </filter-mapping>
+</web-app>
